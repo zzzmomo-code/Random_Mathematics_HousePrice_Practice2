@@ -1,0 +1,10 @@
+特征名称,含义,说明
+OverallQual,综合质量,房屋整体材料和装修质量评分
+GrLivArea,居住面积,地上居住面积（平方英尺）
+GarageCars,车库容量,车库可容纳车辆数
+TotalBsmtSF,地下室总面积,地下室总面积（平方英尺）
+YearBuilt,建造年份,房屋建造年份
+FullBath,全卫生间数,地上全卫生间数量
+BedroomAbvGr,地上卧室数,地上卧室数量
+LotArea,地块面积,地块面积（平方英尺）
+SalePrice,销售价格目标变量,房屋销售价格（美元）

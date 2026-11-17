@@ -1,0 +1,23 @@
+# Office / Word temporary lock files
+~$*.docx
+~$*.xlsx
+~$*.pptx
+*.tmp
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# MATLAB backup / autosave files
+*.asv
+*.m~
+*.autosave
+
+# Build intermediates
+04_Report/_tmp_*
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store

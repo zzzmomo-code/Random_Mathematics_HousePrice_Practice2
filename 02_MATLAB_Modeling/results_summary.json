@@ -1,0 +1,1222 @@
+{
+  "metadata": {
+    "project": "House Price Regression Modeling & Top-3 Feature Contribution Analysis",
+    "student": "裴翰章 (2025310104015)",
+    "instructor": "梁菁",
+    "matlab_version": "25.2.0.2998904 (R2025b)",
+    "random_seed": 42,
+    "train_test_split": "80/20 holdout (240 train / 60 test)",
+    "cv_scheme": "5-fold CV strictly inside training set (leak-free scaling inside folds)",
+    "generated_at": "2026-11-17 18:54:12"
+  },
+  "dataset_summary": {
+    "n_total": 300,
+    "n_train": 240,
+    "n_test": 60,
+    "n_features": 8,
+    "excluded_columns": [
+      "Id"
+    ],
+    "feature_names": [
+      "OverallQual",
+      "GrLivArea",
+      "GarageCars",
+      "TotalBsmtSF",
+      "YearBuilt",
+      "FullBath",
+      "BedroomAbvGr",
+      "LotArea"
+    ],
+    "feature_names_cn": [
+      "综合质量",
+      "地上居住面积",
+      "车库容量",
+      "地下室面积",
+      "建造年份",
+      "全卫生间数",
+      "地上卧室数",
+      "地块面积"
+    ],
+    "target_name": "SalePrice",
+    "saleprice_mean": 252262.90333333332,
+    "saleprice_std": 74998.055213764121,
+    "saleprice_median": 251292.5,
+    "saleprice_min": 82494,
+    "saleprice_max": 435291,
+    "saleprice_skewness": 0.077923589140587973,
+    "max_vif": 1.0396318810150147,
+    "max_interfeature_abs_r": 0.12566798969102505,
+    "condition_number_std_X": 1.2690398702882595
+  },
+  "ols_equivalence_check": {
+    "max_beta_diff_NE_vs_GD": 1.2952368706464767E-6,
+    "max_beta_diff_NE_vs_fitlm": 1.2968666851520538E-6,
+    "max_beta_diff_GD_vs_fitlm": 1.6298145055770874E-9,
+    "max_test_pred_diff_NE_vs_GD": 2.4447217583656311E-8,
+    "max_test_pred_diff_NE_vs_fitlm": 2.4389009922742844E-8,
+    "max_oof_pred_diff_NE_vs_GD": 2.0561856217682362E-8,
+    "all_equivalent_under_1e6": true
+  },
+  "ols_inference_train_240": {
+    "r2": 0.97794860813476037,
+    "adj_r2": 0.9771849235679988,
+    "rmse": 11410.604857652823,
+    "f_stat": 1280.5661534863996,
+    "f_pvalue": 1.1748704830007761E-186,
+    "coefficients": [
+      {
+        "term": "Intercept",
+        "estimate": -1.5481082111921574E+6,
+        "se": 69585.299815894439,
+        "tStat": -22.247632981219745,
+        "pValue": 2.3117090946759292E-59
+      },
+      {
+        "term": "OverallQual",
+        "estimate": 11891.669026490034,
+        "se": 258.862316854869,
+        "tStat": 45.9382005498973,
+        "pValue": 3.6856810535068386E-118
+      },
+      {
+        "term": "GrLivArea",
+        "estimate": 54.793607257906928,
+        "se": 0.711415233778184,
+        "tStat": 77.020570626396392,
+        "pValue": 1.006248649510315E-166
+      },
+      {
+        "term": "GarageCars",
+        "estimate": 19103.487157259959,
+        "se": 666.48075446430619,
+        "tStat": 28.663224000540975,
+        "pValue": 5.0077500080373043E-78
+      },
+      {
+        "term": "TotalBsmtSF",
+        "estimate": 25.166629625487836,
+        "se": 1.118395036737196,
+        "tStat": 22.5024511007389,
+        "pValue": 3.80714933158378E-60
+      },
+      {
+        "term": "YearBuilt",
+        "estimate": 765.33924414649607,
+        "se": 35.126971797924455,
+        "tStat": 21.787794534333234,
+        "pValue": 6.1073537026973131E-58
+      },
+      {
+        "term": "FullBath",
+        "estimate": 10694.875255667685,
+        "se": 656.26249221320938,
+        "tStat": 16.296642551671361,
+        "pValue": 2.9129037483228685E-40
+      },
+      {
+        "term": "BedroomAbvGr",
+        "estimate": 4674.2480901983981,
+        "se": 522.18110278476036,
+        "tStat": 8.95139265911944,
+        "pValue": 1.179870282488704E-16
+      },
+      {
+        "term": "LotArea",
+        "estimate": -0.23730397844680795,
+        "se": 0.19775732479779112,
+        "tStat": -1.1999756706329523,
+        "pValue": 0.23137802246197614
+      }
+    ]
+  },
+  "ols_inference_full_300": {
+    "r2": 0.97790367573257053,
+    "adj_r2": 0.97729621664618072,
+    "rmse": 11300.537967297289,
+    "f_stat": 1609.8264025390465,
+    "f_pvalue": 6.2785461277309928E-236,
+    "coefficients": [
+      {
+        "term": "Intercept",
+        "estimate": -1.5355345193885893E+6,
+        "se": 61207.374487644207,
+        "tStat": -25.08741033645487,
+        "pValue": 9.7903422695274513E-75
+      },
+      {
+        "term": "OverallQual",
+        "estimate": 11915.991599885687,
+        "se": 229.87031401797211,
+        "tStat": 51.837888031744939,
+        "pValue": 5.3535094626458474E-149
+      },
+      {
+        "term": "GrLivArea",
+        "estimate": 54.805398851522853,
+        "se": 0.63914841750046836,
+        "tStat": 85.747531169445,
+        "pValue": 1.4264118699472657E-208
+      },
+      {
+        "term": "GarageCars",
+        "estimate": 19119.823847937641,
+        "se": 597.21163653675808,
+        "tStat": 32.015156233079907,
+        "pValue": 2.3420469518857465E-97
+      },
+      {
+        "term": "TotalBsmtSF",
+        "estimate": 24.719290806403997,
+        "se": 0.97639861825562124,
+        "tStat": 25.316802322565849,
+        "pValue": 1.5873970312576683E-75
+      },
+      {
+        "term": "YearBuilt",
+        "estimate": 758.16625810954531,
+        "se": 30.810858109841931,
+        "tStat": 24.607112707041541,
+        "pValue": 4.5059408998964891E-73
+      },
+      {
+        "term": "FullBath",
+        "estimate": 10839.525954655381,
+        "se": 587.34422158525513,
+        "tStat": 18.455150414861084,
+        "pValue": 6.8439671435526133E-51
+      },
+      {
+        "term": "BedroomAbvGr",
+        "estimate": 4978.0471567308341,
+        "se": 454.33724213427274,
+        "tStat": 10.956722661224511,
+        "pValue": 1.2827973638427182E-23
+      },
+      {
+        "term": "LotArea",
+        "estimate": -0.088370499583803858,
+        "se": 0.17542520490355021,
+        "tStat": -0.503750299920644,
+        "pValue": 0.61481799435033313
+      }
+    ]
+  },
+  "models": [
+    {
+      "id": "T1_Single_Linear",
+      "tier": "Tier 1: Single-Var Curve Fit",
+      "display_name": "1D Linear (GrLivArea, poly1)",
+      "n_params": 1,
+      "train": {
+        "n": 240,
+        "rmse": 49354.697004366441,
+        "mae": 40469.887328508768,
+        "r2": 0.57137754805995677,
+        "adj_r2": 0.56957661338793986,
+        "mape_pct": 18.399029118843913,
+        "max_abs_err": 120858.51032092038
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 50025.528979672636,
+        "mae": 41032.581977691007,
+        "r2": 0.55964663891166577,
+        "adj_r2": 0.55779641470541219,
+        "mape_pct": 18.643822537904278,
+        "max_abs_err": 124342.89943237242
+      },
+      "cv_rmse_mean": 49877.054954245032,
+      "cv_rmse_std": 4305.946293686271,
+      "cv_r2_mean": 0.53701700572335032,
+      "cv_r2_std": 0.097864626805334268,
+      "cv_fold_rmses": [
+        49039.098457247514,
+        47167.413140600096,
+        52735.003073409142,
+        55593.783248208834,
+        44849.976851759573
+      ],
+      "cv_fold_r2s": [
+        0.63208011137982179,
+        0.60443682452402248,
+        0.40825205174786039,
+        0.58171551619104633,
+        0.45860052477400071
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 52260.139673559635,
+        "mae": 39571.742884033039,
+        "r2": 0.48405320326678625,
+        "adj_r2": 0.47515756884035154,
+        "mape_pct": 17.166477263807543,
+        "max_abs_err": 150293.0105786002
+      },
+      "coefficients_raw": [
+        54.459871808863006,
+        125963.2458036738
+      ],
+      "slope_p_value": 1.1227982999653974E-45
+    },
+    {
+      "id": "T1_Single_Parabolic",
+      "tier": "Tier 1: Single-Var Curve Fit",
+      "display_name": "1D Parabolic (GrLivArea, poly2)",
+      "n_params": 2,
+      "train": {
+        "n": 240,
+        "rmse": 49252.608091693466,
+        "mae": 40522.775422978986,
+        "r2": 0.57314890304692478,
+        "adj_r2": 0.56954678408529547,
+        "mape_pct": 18.454012314787548,
+        "max_abs_err": 120648.28885947086
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 50061.337237277294,
+        "mae": 41222.453982027881,
+        "r2": 0.55901600369880955,
+        "adj_r2": 0.55529461976377847,
+        "mape_pct": 18.761499997104174,
+        "max_abs_err": 123278.61502602731
+      },
+      "cv_rmse_mean": 49929.418978828377,
+      "cv_rmse_std": 4060.5736080355045,
+      "cv_r2_mean": 0.5354069023402428,
+      "cv_r2_std": 0.0999931659844965,
+      "cv_fold_rmses": [
+        49290.039451929064,
+        46895.406526482053,
+        52506.583149877486,
+        55432.144951313843,
+        45522.920814539415
+      ],
+      "cv_fold_r2s": [
+        0.62830506617193216,
+        0.60898596340445343,
+        0.4133672229808627,
+        0.58414429505189891,
+        0.44223196409206611
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 51872.001753423392,
+        "mae": 39024.993650313816,
+        "r2": 0.4916886536984485,
+        "adj_r2": 0.47385316786330633,
+        "mape_pct": 16.818628319229141,
+        "max_abs_err": 153796.13413635013
+      },
+      "coefficients_raw": [
+        0.0034850947865338322,
+        38.430832246614081,
+        140577.82222428638
+      ],
+      "quad_term_p_value": 0.3223458851732004
+    },
+    {
+      "id": "T2_OLS_NormalEq",
+      "tier": "Tier 2: Multivariate Linear & Poly",
+      "display_name": "OLS (Normal Equation)",
+      "n_params": 8,
+      "train": {
+        "n": 240,
+        "rmse": 11194.611732741198,
+        "mae": 9518.6359050904521,
+        "r2": 0.97794860813476037,
+        "adj_r2": 0.9771849235679988,
+        "mape_pct": 4.2395831597370615,
+        "max_abs_err": 23844.841085614054
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 11724.048119491215,
+        "mae": 10010.557585778979,
+        "r2": 0.97581349475932666,
+        "adj_r2": 0.97497586687220372,
+        "mape_pct": 4.4567987419090356,
+        "max_abs_err": 25738.352389881446
+      },
+      "cv_rmse_mean": 11711.829934819232,
+      "cv_rmse_std": 598.27239408320213,
+      "cv_r2_mean": 0.97385048771361693,
+      "cv_r2_std": 0.00833103834577685,
+      "cv_fold_rmses": [
+        12442.110640109759,
+        10857.816673015644,
+        11624.438856471945,
+        11553.623790719652,
+        12081.159713779167
+      ],
+      "cv_fold_r2s": [
+        0.9763159249781822,
+        0.9790387707832553,
+        0.971247023828032,
+        0.98193426066372358,
+        0.96071645831489116
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 11030.355797103713,
+        "mae": 9604.48048106491,
+        "r2": 0.9770150887629675,
+        "adj_r2": 0.97340961249049185,
+        "mape_pct": 4.2716700392082831,
+        "max_abs_err": 21683.552446684393
+      },
+      "beta_raw": [
+        -1.5481082111934542E+6,
+        11891.669026489981,
+        54.79360725790616,
+        19103.4871572601,
+        25.166629625488312,
+        765.33924414715091,
+        10694.87525566711,
+        4674.2480901989775,
+        -0.2373039784471376
+      ]
+    },
+    {
+      "id": "T2_OLS_GradDesc",
+      "tier": "Tier 2: Multivariate Linear & Poly",
+      "display_name": "OLS (Manual Batch GD)",
+      "n_params": 8,
+      "train": {
+        "n": 240,
+        "rmse": 11194.61173274119,
+        "mae": 9518.6359050903211,
+        "r2": 0.97794860813476037,
+        "adj_r2": 0.9771849235679988,
+        "mape_pct": 4.2395831597368057,
+        "max_abs_err": 23844.841085632972
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 11724.048119490672,
+        "mae": 10010.557585778599,
+        "r2": 0.975813494759329,
+        "adj_r2": 0.97497586687220616,
+        "mape_pct": 4.4567987419086474,
+        "max_abs_err": 25738.352389862121
+      },
+      "cv_rmse_mean": 11711.829934818705,
+      "cv_rmse_std": 598.27239408281923,
+      "cv_r2_mean": 0.97385048771361848,
+      "cv_r2_std": 0.00833103834577947,
+      "cv_fold_rmses": [
+        12442.110640107914,
+        10857.816673015543,
+        11624.438856471979,
+        11553.623790718482,
+        12081.159713779605
+      ],
+      "cv_fold_r2s": [
+        0.9763159249781892,
+        0.97903877078325574,
+        0.97124702382803185,
+        0.98193426066372724,
+        0.96071645831488828
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 11030.35579710296,
+        "mae": 9604.4804810650367,
+        "r2": 0.97701508876297061,
+        "adj_r2": 0.9734096124904954,
+        "mape_pct": 4.27167003920865,
+        "max_abs_err": 21683.552446678048
+      },
+      "beta_raw": [
+        -1.548108211192159E+6,
+        11891.66902649,
+        54.793607257906913,
+        19103.487157259991,
+        25.166629625487737,
+        765.33924414649709,
+        10694.875255667663,
+        4674.2480901983708,
+        -0.23730397844682172
+      ],
+      "gd_lr": 0.05,
+      "gd_iterations": 2500,
+      "gd_final_grad_norm": 2.8232107944561039E-10
+    },
+    {
+      "id": "T2_OLS_fitlm",
+      "tier": "Tier 2: Multivariate Linear & Poly",
+      "display_name": "OLS (MATLAB fitlm)",
+      "n_params": 8,
+      "train": {
+        "n": 240,
+        "rmse": 11194.611732741187,
+        "mae": 9518.6359050903156,
+        "r2": 0.97794860813476037,
+        "adj_r2": 0.9771849235679988,
+        "mape_pct": 4.239583159736803,
+        "max_abs_err": 23844.84108563303
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 11724.048119490626,
+        "mae": 10010.557585778546,
+        "r2": 0.9758134947593291,
+        "adj_r2": 0.97497586687220628,
+        "mape_pct": 4.4567987419086226,
+        "max_abs_err": 25738.352389862237
+      },
+      "cv_rmse_mean": 11711.829934818659,
+      "cv_rmse_std": 598.272394082797,
+      "cv_r2_mean": 0.97385048771361871,
+      "cv_r2_std": 0.00833103834577942,
+      "cv_fold_rmses": [
+        12442.110640107872,
+        10857.816673015603,
+        11624.438856471745,
+        11553.623790718462,
+        12081.159713779618
+      ],
+      "cv_fold_r2s": [
+        0.97631592497818942,
+        0.97903877078325541,
+        0.971247023828033,
+        0.98193426066372735,
+        0.96071645831488817
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 11030.355797102931,
+        "mae": 9604.48048106499,
+        "r2": 0.97701508876297072,
+        "adj_r2": 0.97340961249049551,
+        "mape_pct": 4.2716700392086384,
+        "max_abs_err": 21683.552446678688
+      },
+      "beta_raw": [
+        -1.5481082111921574E+6,
+        11891.669026490034,
+        54.793607257906928,
+        19103.487157259959,
+        25.166629625487836,
+        765.33924414649607,
+        10694.875255667685,
+        4674.2480901983981,
+        -0.23730397844680795
+      ],
+      "f_stat": 1280.5661534863996,
+      "f_pvalue": 1.1748704830007761E-186
+    },
+    {
+      "id": "T2_PureQuadratic",
+      "tier": "Tier 2: Multivariate Linear & Poly",
+      "display_name": "Pure Quadratic (16 terms)",
+      "n_params": 16,
+      "train": {
+        "n": 240,
+        "rmse": 11150.313406171244,
+        "mae": 9447.917777336801,
+        "r2": 0.978122782469616,
+        "adj_r2": 0.97655311663783961,
+        "mape_pct": 4.2216866952188505,
+        "max_abs_err": 23119.357359418995
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 12177.2385808691,
+        "mae": 10362.39879095069,
+        "r2": 0.97390750756699251,
+        "adj_r2": 0.97203540048659731,
+        "mape_pct": 4.6051442120531743,
+        "max_abs_err": 30093.978638162749
+      },
+      "cv_rmse_mean": 12164.550075470524,
+      "cv_rmse_std": 621.35026029698668,
+      "cv_r2_mean": 0.97172600848746848,
+      "cv_r2_std": 0.0093750033964443372,
+      "cv_fold_rmses": [
+        12591.591294708873,
+        11109.979801046322,
+        12217.208235014519,
+        12249.734735700629,
+        12654.236310882283
+      ],
+      "cv_fold_r2s": [
+        0.97574342117218427,
+        0.97805385336645279,
+        0.96823983412736681,
+        0.979691742362278,
+        0.95690119140906071
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 11095.440444627164,
+        "mae": 9621.8310897618976,
+        "r2": 0.97674304344614293,
+        "adj_r2": 0.96808929217028916,
+        "mape_pct": 4.2868882327614122,
+        "max_abs_err": 20708.220055409329
+      }
+    },
+    {
+      "id": "T2_FullQuadratic",
+      "tier": "Tier 2: Multivariate Linear & Poly",
+      "display_name": "Full Quadratic (44 terms)",
+      "n_params": 44,
+      "train": {
+        "n": 240,
+        "rmse": 10184.828269165018,
+        "mae": 8459.8744186826334,
+        "r2": 0.98174737390457145,
+        "adj_r2": 0.97762883263175682,
+        "mape_pct": 3.8028769587152031,
+        "max_abs_err": 25048.979865075438
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 12355.385695052526,
+        "mae": 10181.247745477711,
+        "r2": 0.973138482076517,
+        "adj_r2": 0.96707742162198751,
+        "mape_pct": 4.5857682604972565,
+        "max_abs_err": 38002.098690120183
+      },
+      "cv_rmse_mean": 12324.763694768462,
+      "cv_rmse_std": 971.95392227835839,
+      "cv_r2_mean": 0.970921418702727,
+      "cv_r2_std": 0.0096725153493717967,
+      "cv_fold_rmses": [
+        13798.838067578961,
+        11582.415387024619,
+        12113.659934320418,
+        11403.123255403978,
+        12725.781829514339
+      ],
+      "cv_fold_r2s": [
+        0.97086913728781232,
+        0.97614771387444743,
+        0.96877592620748143,
+        0.9824018533281661,
+        0.95641246281572734
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 12194.348527288086,
+        "mae": 10343.99844779237,
+        "r2": 0.9719081076724897,
+        "adj_r2": 0.88950522351179284,
+        "mape_pct": 4.4659842570525532,
+        "max_abs_err": 31780.725514816295
+      }
+    },
+    {
+      "id": "T3_Ridge_L2",
+      "tier": "Tier 3: Regularized Linear",
+      "display_name": "Ridge Regression (L2)",
+      "n_params": 8,
+      "train": {
+        "n": 240,
+        "rmse": 11194.61173274119,
+        "mae": 9518.6359050903156,
+        "r2": 0.97794860813476037,
+        "adj_r2": 0.9771849235679988,
+        "mape_pct": 4.2395831597368057,
+        "max_abs_err": 23844.841085633263
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 11724.048119490668,
+        "mae": 10010.557585778581,
+        "r2": 0.975813494759329,
+        "adj_r2": 0.97497586687220616,
+        "mape_pct": 4.456798741908643,
+        "max_abs_err": 25738.352389862237
+      },
+      "cv_rmse_mean": 11711.8299348187,
+      "cv_rmse_std": 598.27239408283458,
+      "cv_r2_mean": 0.97385048771361848,
+      "cv_r2_std": 0.0083310383457793676,
+      "cv_fold_rmses": [
+        12442.110640107969,
+        10857.816673015548,
+        11624.438856471907,
+        11553.623790718484,
+        12081.159713779592
+      ],
+      "cv_fold_r2s": [
+        0.976315924978189,
+        0.97903877078325563,
+        0.97124702382803219,
+        0.98193426066372724,
+        0.96071645831488839
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 11030.355797102937,
+        "mae": 9604.480481065,
+        "r2": 0.97701508876297072,
+        "adj_r2": 0.97340961249049551,
+        "mape_pct": 4.271670039208642,
+        "max_abs_err": 21683.552446678397
+      },
+      "best_lambda": 0,
+      "w_std": [
+        34086.712594187644,
+        57452.980761789033,
+        21319.438523408826,
+        16671.815897371263,
+        16279.835570637197,
+        12140.85279747544,
+        6683.6201602591018,
+        -893.40018329222335
+      ],
+      "builtin_ridge_max_diff": 5.8207660913467407E-11
+    },
+    {
+      "id": "T3_Lasso_L1",
+      "tier": "Tier 3: Regularized Linear",
+      "display_name": "Lasso Regression (L1)",
+      "n_params": 8,
+      "train": {
+        "n": 240,
+        "rmse": 11194.612089958402,
+        "mae": 9518.632201110051,
+        "r2": 0.97794860672745176,
+        "adj_r2": 0.97718492211195229,
+        "mape_pct": 4.2395699740004575,
+        "max_abs_err": 23843.423571106454
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 11724.132255693181,
+        "mae": 10010.6621733509,
+        "r2": 0.97581314761506888,
+        "adj_r2": 0.974975507705634,
+        "mape_pct": 4.4568925004893529,
+        "max_abs_err": 25741.287767549773
+      },
+      "cv_rmse_mean": 11711.911647096826,
+      "cv_rmse_std": 598.3338528603424,
+      "cv_r2_mean": 0.97385020741035522,
+      "cv_r2_std": 0.0083314478547948274,
+      "cv_fold_rmses": [
+        12442.098954680829,
+        10857.810604645707,
+        11623.522025149014,
+        11554.432503978787,
+        12081.694147029793
+      ],
+      "cv_fold_r2s": [
+        0.97631596946556121,
+        0.9790387942134644,
+        0.971251559202156,
+        0.981931731498065,
+        0.9607129826725288
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 11030.21446437034,
+        "mae": 9604.8487587472737,
+        "r2": 0.97701567777379894,
+        "adj_r2": 0.97341029389517919,
+        "mape_pct": 4.2718270201207886,
+        "max_abs_err": 21678.738823096646
+      },
+      "lambda_min": 1,
+      "lambda_1se": 775.71465733702121,
+      "w_std_min": [
+        34085.601414473524,
+        57451.947673402421,
+        21318.538794797194,
+        16670.778547779115,
+        16278.778156369843,
+        12140.07624128673,
+        6682.5420188917642,
+        -892.39573804040333
+      ],
+      "w_std_1se": [
+        33224.699081909857,
+        56651.564717961985,
+        20621.5339488328,
+        15867.124161257543,
+        15459.589295031992,
+        11538.466345775214,
+        5847.2806924772622,
+        -114.23970065253121
+      ],
+      "nonzero_count_min": 8,
+      "nonzero_count_1se": 8,
+      "cv_rmse_1se": 11958.605549418202,
+      "test_1se": {
+        "n": 60,
+        "rmse": 11155.827922316144,
+        "mae": 9890.1602995997619,
+        "r2": 0.97648920029522446,
+        "adj_r2": 0.97280123171408317,
+        "mape_pct": 4.3934428751772971,
+        "max_abs_err": 22233.621008933289
+      }
+    },
+    {
+      "id": "T4_DecisionTree",
+      "tier": "Tier 4: Tree & Ensemble",
+      "display_name": "Decision Tree (fitrtree)",
+      "n_params": 8,
+      "train": {
+        "n": 240,
+        "rmse": 21342.982953035174,
+        "mae": 17334.581375661375,
+        "r2": 0.91984545166421428,
+        "adj_r2": 0.9170695365703343,
+        "mape_pct": 7.6075124576686557,
+        "max_abs_err": 77820.166666666686
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 41668.546001594616,
+        "mae": 34309.496509589939,
+        "r2": 0.69448352905918886,
+        "adj_r2": 0.68390287205690969,
+        "mape_pct": 15.002302012647064,
+        "max_abs_err": 120292.28571428571
+      },
+      "cv_rmse_mean": 41566.799864229943,
+      "cv_rmse_std": 3253.6277702858561,
+      "cv_r2_mean": 0.66575344646369428,
+      "cv_r2_std": 0.12494138990051115,
+      "cv_fold_rmses": [
+        39787.007320744327,
+        38776.008550761988,
+        47060.759201201618,
+        40481.294569851634,
+        41728.929678590161
+      ],
+      "cv_fold_r2s": [
+        0.75781298311029177,
+        0.73266369392896047,
+        0.52874424414736831,
+        0.77821708826794522,
+        0.53132922286390549
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 43011.02339090102,
+        "mae": 36321.505264550266,
+        "r2": 0.65051918443388956,
+        "adj_r2": 0.59569866434508789,
+        "mape_pct": 15.039546716276043,
+        "max_abs_err": 95879.166666666628
+      },
+      "best_min_leaf_size": 5,
+      "num_nodes": 75
+    },
+    {
+      "id": "T4_RandomForest",
+      "tier": "Tier 4: Tree & Ensemble",
+      "display_name": "Random Forest (TreeBagger)",
+      "n_params": 8,
+      "train": {
+        "n": 240,
+        "rmse": 11636.592906114207,
+        "mae": 9214.5193477843732,
+        "r2": 0.97617298606864145,
+        "adj_r2": 0.97534780809699262,
+        "mape_pct": 4.2023326939711652,
+        "max_abs_err": 36518.843700000114
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 28653.866418373662,
+        "mae": 23384.576512342934,
+        "r2": 0.85552776211943282,
+        "adj_r2": 0.85052439457378548,
+        "mape_pct": 10.625521899508401,
+        "max_abs_err": 76334.053452380933
+      },
+      "cv_rmse_mean": 28606.727752352559,
+      "cv_rmse_std": 1836.8410467374567,
+      "cv_r2_mean": 0.84529368920427039,
+      "cv_r2_std": 0.042055450045044865,
+      "cv_fold_rmses": [
+        25953.467418269971,
+        29033.329713414932,
+        29100.612558386209,
+        30977.9378097663,
+        27968.291261925402
+      ],
+      "cv_fold_r2s": [
+        0.89694736830935806,
+        0.85012629961245079,
+        0.8198048609941031,
+        0.8701253760956269,
+        0.78946454100981334
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 28916.525230018335,
+        "mae": 23024.472206031754,
+        "r2": 0.84203677299242374,
+        "adj_r2": 0.81725822757947064,
+        "mape_pct": 9.5036400488192818,
+        "max_abs_err": 79640.964819047542
+      },
+      "best_min_leaf_size": 2,
+      "best_mtry": 7,
+      "num_trees": 500,
+      "oob_rmse": 27375.617555126832,
+      "oob_r2": 0.868130066769039
+    },
+    {
+      "id": "T4_GBDT_LSBoost",
+      "tier": "Tier 4: Tree & Ensemble",
+      "display_name": "GBDT (LSBoost)",
+      "n_params": 8,
+      "train": {
+        "n": 240,
+        "rmse": 11652.638792312349,
+        "mae": 9474.1494076069685,
+        "r2": 0.97610722985382559,
+        "adj_r2": 0.97527977461066806,
+        "mape_pct": 4.215672879051203,
+        "max_abs_err": 26967.145283781283
+      },
+      "cv_oof": {
+        "n": 240,
+        "rmse": 17023.706320611036,
+        "mae": 13876.915810025492,
+        "r2": 0.9490051670563866,
+        "adj_r2": 0.94723911223582857,
+        "mape_pct": 6.2691724359657659,
+        "max_abs_err": 45030.327086643374
+      },
+      "cv_rmse_mean": 16919.020352234242,
+      "cv_rmse_std": 2107.52438037368,
+      "cv_r2_mean": 0.94455104012562929,
+      "cv_r2_std": 0.024839379392703746,
+      "cv_fold_rmses": [
+        16987.137935445444,
+        14390.633858697232,
+        15252.789943112897,
+        18783.60484559074,
+        19180.935178324904
+      ],
+      "cv_fold_r2s": [
+        0.9558522335135875,
+        0.96317933862786842,
+        0.950496331005148,
+        0.95224958147540029,
+        0.90097771600614163
+      ],
+      "test": {
+        "n": 60,
+        "rmse": 15805.994497854506,
+        "mae": 12439.113288109475,
+        "r2": 0.952803755634223,
+        "adj_r2": 0.94540042318468942,
+        "mape_pct": 5.428132527548871,
+        "max_abs_err": 51544.58238748429
+      },
+      "best_max_num_splits": 1,
+      "best_learn_rate": 0.1,
+      "best_num_cycles": 300
+    }
+  ],
+  "best_model_diagnostics": {
+    "best_model_id": "T2_OLS_fitlm",
+    "best_model_name": "OLS (MATLAB fitlm)",
+    "train_resid_mean": 8.0763129517436025E-11,
+    "train_resid_std": 11218.006976091689,
+    "test_resid_mean": 1468.6785342127109,
+    "test_resid_std": 11024.398167538771,
+    "all_resid_min": -23844.84108563303,
+    "all_resid_max": 21005.817760088568,
+    "all_resid_kurtosis": 1.9819564587191263,
+    "jarque_bera_reject_normal": true,
+    "jarque_bera_p": 0.0053611615053109863,
+    "jarque_bera_stat": 14.329186178391664
+  },
+  "feature_importance": {
+    "top3_consensus": [
+      "GrLivArea",
+      "OverallQual",
+      "GarageCars"
+    ],
+    "top3_exact_order_agree_4methods": true,
+    "rank_spearman_corr_4methods": [
+      [
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "ranked_table": [
+      {
+        "consensus_rank": 1,
+        "feature": "GrLivArea",
+        "feature_cn": "地上居住面积",
+        "ols_raw_beta_train": 54.793607257906928,
+        "ols_raw_beta_full": 54.805398851522853,
+        "ols_std_beta_train": 57452.980761789033,
+        "ols_std_beta_full": 57137.988043639547,
+        "ols_std_abs_beta": 57452.980761789033,
+        "ols_std_share_pct": 34.708782141180514,
+        "ols_tstat_train": 77.020570626396491,
+        "ols_pvalue_train": 1.0062486495100861E-166,
+        "ols_pvalue_full": 1.4264118699472657E-208,
+        "drop_cv_rmse": 60594.183993971754,
+        "delta_cv_rmse": 48882.354059153091,
+        "delta_cv_r2": 0.66322277829990206,
+        "univariate_r_all": 0.74509453662007441,
+        "univariate_r2_all": 0.5551658685010834,
+        "univariate_r2_train": 0.57137754805995677,
+        "lasso_entry_lambda": 54437.791278140547,
+        "lasso_beta_min": 57451.947673402421,
+        "lasso_beta_1se": 56651.564717961985,
+        "rf_oob_perm_imp": 5.692499556289861,
+        "rank_methodA_stdOLS": 1,
+        "rank_methodB_dropCV": 1,
+        "rank_methodB_uniR2": 1,
+        "rank_methodC_lasso": 1,
+        "rank_methodD_rfPerm": 1,
+        "mean_rank_4methods": 1
+      },
+      {
+        "consensus_rank": 2,
+        "feature": "OverallQual",
+        "feature_cn": "综合质量",
+        "ols_raw_beta_train": 11891.669026490034,
+        "ols_raw_beta_full": 11915.991599885687,
+        "ols_std_beta_train": 34086.712594187622,
+        "ols_std_beta_full": 34234.658401486828,
+        "ols_std_abs_beta": 34086.712594187622,
+        "ols_std_share_pct": 20.592635328114376,
+        "ols_tstat_train": 45.93820054989731,
+        "ols_pvalue_train": 3.6856810535068386E-118,
+        "ols_pvalue_full": 5.3535094626458474E-149,
+        "drop_cv_rmse": 37942.805217949586,
+        "delta_cv_rmse": 26230.975283130927,
+        "delta_cv_r2": 0.24636870377810571,
+        "univariate_r_all": 0.3528994452666937,
+        "univariate_r2_all": 0.12453801846954014,
+        "univariate_r2_train": 0.1490723995082627,
+        "lasso_entry_lambda": 28507.376159151343,
+        "lasso_beta_min": 34085.601414473524,
+        "lasso_beta_1se": 33224.699081909857,
+        "rf_oob_perm_imp": 3.1064224102309228,
+        "rank_methodA_stdOLS": 2,
+        "rank_methodB_dropCV": 2,
+        "rank_methodB_uniR2": 2,
+        "rank_methodC_lasso": 2,
+        "rank_methodD_rfPerm": 2,
+        "mean_rank_4methods": 2
+      },
+      {
+        "consensus_rank": 3,
+        "feature": "GarageCars",
+        "feature_cn": "车库容量",
+        "ols_raw_beta_train": 19103.487157259959,
+        "ols_raw_beta_full": 19119.823847937641,
+        "ols_std_beta_train": 21319.438523408811,
+        "ols_std_beta_full": 21221.048558310787,
+        "ols_std_abs_beta": 21319.438523408811,
+        "ols_std_share_pct": 12.879605849335322,
+        "ols_tstat_train": 28.663224000540961,
+        "ols_pvalue_train": 5.007750008037732E-78,
+        "ols_pvalue_full": 2.3420469518857465E-97,
+        "drop_cv_rmse": 25069.311010855989,
+        "delta_cv_rmse": 13357.481076037329,
+        "delta_cv_r2": 0.097035627539214575,
+        "univariate_r_all": 0.35132062827915672,
+        "univariate_r2_all": 0.12342618385446141,
+        "univariate_r2_train": 0.0781860693403542,
+        "lasso_entry_lambda": 21604.93661210961,
+        "lasso_beta_min": 21318.538794797194,
+        "lasso_beta_1se": 20621.5339488328,
+        "rf_oob_perm_imp": 1.3742513031776837,
+        "rank_methodA_stdOLS": 3,
+        "rank_methodB_dropCV": 3,
+        "rank_methodB_uniR2": 3,
+        "rank_methodC_lasso": 3,
+        "rank_methodD_rfPerm": 3,
+        "mean_rank_4methods": 3
+      },
+      {
+        "consensus_rank": 4,
+        "feature": "TotalBsmtSF",
+        "feature_cn": "地下室面积",
+        "ols_raw_beta_train": 25.166629625487836,
+        "ols_raw_beta_full": 24.719290806403997,
+        "ols_std_beta_train": 16671.815897371271,
+        "ols_std_beta_full": 16619.612369389044,
+        "ols_std_abs_beta": 16671.815897371271,
+        "ols_std_share_pct": 10.071860819179376,
+        "ols_tstat_train": 22.502451100738867,
+        "ols_pvalue_train": 3.8071493315845397E-60,
+        "ols_pvalue_full": 1.5873970312576683E-75,
+        "drop_cv_rmse": 20891.207820700078,
+        "delta_cv_rmse": 9179.3778858814185,
+        "delta_cv_r2": 0.054754775699878744,
+        "univariate_r_all": 0.250177632744459,
+        "univariate_r2_all": 0.062588847925621388,
+        "univariate_r2_train": 0.060928246293363582,
+        "lasso_entry_lambda": 16373.772296944042,
+        "lasso_beta_min": 16670.778547779115,
+        "lasso_beta_1se": 15867.124161257543,
+        "rf_oob_perm_imp": 0.97539271319709253,
+        "rank_methodA_stdOLS": 4,
+        "rank_methodB_dropCV": 4,
+        "rank_methodB_uniR2": 5,
+        "rank_methodC_lasso": 4,
+        "rank_methodD_rfPerm": 4,
+        "mean_rank_4methods": 4
+      },
+      {
+        "consensus_rank": 5,
+        "feature": "YearBuilt",
+        "feature_cn": "建造年份",
+        "ols_raw_beta_train": 765.33924414649607,
+        "ols_raw_beta_full": 758.16625810954531,
+        "ols_std_beta_train": 16279.835570637213,
+        "ols_std_beta_full": 16207.38736091457,
+        "ols_std_abs_beta": 16279.835570637213,
+        "ols_std_share_pct": 9.8350557033464714,
+        "ols_tstat_train": 21.787794534333255,
+        "ols_pvalue_train": 6.10735370269644E-58,
+        "ols_pvalue_full": 4.5059408998964891E-73,
+        "drop_cv_rmse": 20492.930316017191,
+        "delta_cv_rmse": 8781.100381198532,
+        "delta_cv_r2": 0.054772361964109062,
+        "univariate_r_all": 0.22214237205464976,
+        "univariate_r2_all": 0.049347233462066438,
+        "univariate_r2_train": 0.072593182008321155,
+        "lasso_entry_lambda": 16373.772296944042,
+        "lasso_beta_min": 16278.778156369843,
+        "lasso_beta_1se": 15459.589295031992,
+        "rf_oob_perm_imp": 0.924426948522643,
+        "rank_methodA_stdOLS": 5,
+        "rank_methodB_dropCV": 5,
+        "rank_methodB_uniR2": 6,
+        "rank_methodC_lasso": 5,
+        "rank_methodD_rfPerm": 5,
+        "mean_rank_4methods": 5
+      },
+      {
+        "consensus_rank": 6,
+        "feature": "FullBath",
+        "feature_cn": "全卫生间数",
+        "ols_raw_beta_train": 10694.875255667685,
+        "ols_raw_beta_full": 10839.525954655381,
+        "ols_std_beta_train": 12140.852797475478,
+        "ols_std_beta_full": 12265.39272846311,
+        "ols_std_abs_beta": 12140.852797475478,
+        "ols_std_share_pct": 7.3345927255349688,
+        "ols_tstat_train": 16.29664255167134,
+        "ols_pvalue_train": 2.9129037483233269E-40,
+        "ols_pvalue_full": 6.8439671435526133E-51,
+        "drop_cv_rmse": 17562.573254541116,
+        "delta_cv_rmse": 5850.7433197224564,
+        "delta_cv_r2": 0.031788972324257259,
+        "univariate_r_all": 0.2737310011976557,
+        "univariate_r2_all": 0.074928661016670992,
+        "univariate_r2_train": 0.049388999792576646,
+        "lasso_entry_lambda": 13610.66192271448,
+        "lasso_beta_min": 12140.07624128673,
+        "lasso_beta_1se": 11538.466345775214,
+        "rf_oob_perm_imp": 0.632586284549403,
+        "rank_methodA_stdOLS": 6,
+        "rank_methodB_dropCV": 6,
+        "rank_methodB_uniR2": 4,
+        "rank_methodC_lasso": 6,
+        "rank_methodD_rfPerm": 6,
+        "mean_rank_4methods": 6
+      },
+      {
+        "consensus_rank": 7,
+        "feature": "BedroomAbvGr",
+        "feature_cn": "地上卧室数",
+        "ols_raw_beta_train": 4674.2480901983981,
+        "ols_raw_beta_full": 4978.0471567308341,
+        "ols_std_beta_train": 6683.6201602590963,
+        "ols_std_beta_full": 7251.0422464506373,
+        "ols_std_abs_beta": 6683.6201602590963,
+        "ols_std_share_pct": 4.0377420454244044,
+        "ols_tstat_train": 8.9513926591194153,
+        "ols_pvalue_train": 1.1798702824888825E-16,
+        "ols_pvalue_full": 1.2827973638427182E-23,
+        "drop_cv_rmse": 13603.563279892896,
+        "delta_cv_rmse": 1891.7333450742371,
+        "delta_cv_r2": 0.00932165736172097,
+        "univariate_r_all": 0.014113245035166724,
+        "univariate_r2_all": 0.00019918368542265819,
+        "univariate_r2_train": 0.00033705291168558625,
+        "lasso_entry_lambda": 5924.7018059173843,
+        "lasso_beta_min": 6682.5420188917642,
+        "lasso_beta_1se": 5847.2806924772622,
+        "rf_oob_perm_imp": 0.11231202473935613,
+        "rank_methodA_stdOLS": 7,
+        "rank_methodB_dropCV": 7,
+        "rank_methodB_uniR2": 8,
+        "rank_methodC_lasso": 7,
+        "rank_methodD_rfPerm": 7,
+        "mean_rank_4methods": 7
+      },
+      {
+        "consensus_rank": 8,
+        "feature": "LotArea",
+        "feature_cn": "地块面积",
+        "ols_raw_beta_train": -0.23730397844680795,
+        "ols_raw_beta_full": -0.088370499583803858,
+        "ols_std_beta_train": -893.40018329222244,
+        "ols_std_beta_full": -331.70142136342628,
+        "ols_std_abs_beta": 893.40018329222244,
+        "ols_std_share_pct": 0.53972538788455549,
+        "ols_tstat_train": -1.1999756706330122,
+        "ols_pvalue_train": 0.23137802246195227,
+        "ols_pvalue_full": 0.61481799435033313,
+        "drop_cv_rmse": 11662.689985518218,
+        "delta_cv_rmse": -49.139949300441,
+        "delta_cv_r2": -0.00026202210566428352,
+        "univariate_r_all": -0.038981895160027945,
+        "univariate_r2_all": 0.0015195881502674102,
+        "univariate_r2_train": 2.9374237634874445E-5,
+        "lasso_entry_lambda": 850.8181533759,
+        "lasso_beta_min": -892.39573804040333,
+        "lasso_beta_1se": -114.23970065253121,
+        "rf_oob_perm_imp": 0.053968994573168026,
+        "rank_methodA_stdOLS": 8,
+        "rank_methodB_dropCV": 8,
+        "rank_methodB_uniR2": 7,
+        "rank_methodC_lasso": 8,
+        "rank_methodD_rfPerm": 8,
+        "mean_rank_4methods": 8
+      }
+    ],
+    "suppression_note": "OverallQual vs GrLivArea sample r = -0.1164: in univariate correlation OverallQual (r=0.3529) nearly ties GarageCars (r=0.3513), whereas controlling for GrLivArea in multivariate OLS reveals OverallQual (|beta*|=$34087) is clearly #2 well ahead of GarageCars ($21319)."
+  },
+  "figure_paths": [
+    "E:\\Random_Mathematics_Project_HousePrice\\03_Figures\\fig1_eda_correlation_heatmap.png",
+    "E:\\Random_Mathematics_Project_HousePrice\\03_Figures\\fig2_single_feature_line_vs_parabola.png",
+    "E:\\Random_Mathematics_Project_HousePrice\\03_Figures\\fig3_models_progression_and_diagnostics.png",
+    "E:\\Random_Mathematics_Project_HousePrice\\03_Figures\\fig4_gd_convergence_and_lasso_path.png",
+    "E:\\Random_Mathematics_Project_HousePrice\\03_Figures\\fig5_feature_importance_4methods.png"
+  ],
+  "eda_json_path": "E:\\Random_Mathematics_Project_HousePrice\\01_Data\\eda_summary.json"
+}
