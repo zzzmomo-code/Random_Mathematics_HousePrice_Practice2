@@ -82,4 +82,4 @@
 - **V3 修正与验证**：
   1. **部分二次项建模（10 项）**：逐项排查 8 特征后选定跨度最大的两个连续面积特征 `GrLivArea` 与 `TotalBsmtSF` 加二次平方项，其余 6 个特征保持线性；同步更新 `main_house_price_modeling.m` (`T2_PartialQuadratic`)、`practice2_house_price_clean.m` 与 `practice2_house_price_tutorial.m`。MATLAB R2025b 实跑：`Train RMSE=$11,168`，`5折 CV RMSE=$11,756`，`Test RMSE=$10,926`（较全线性 `\$11,030` 再降）、`Test MAE=$9,505`、`Test R^2=0.9774`。
   2. **报告正文与附录修复**：第 2 节开头明确解释借鉴 AI 训练防“背答案”（过拟合）的 8:2 划分与 5 折 CV 原理；第 2.2 节与表 2 改为“多元一次线性（8 项）vs 部分二次拟合（10 项）”；移除附录冗余 `Z_te`；统一第 4 节 `$11,030` / `$10,926` 与 `5 折` 用词。
-  3. **验收通过**：XML 自检通过（`OMML 48 / 7`，0 残留 LaTeX，0 页眉，0 非白底纹，0 禁词命中）；`04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V3.pdf`（同步刷新 `.docx` 与 `_V1.pdf`）逐页视觉检查确认严格 4 页、全整表不跨页。
+  3. **验收通过**：XML 自检通过（`OMML 48 / 7`，0 残留 LaTeX，0 页眉，0 非白底纹，0 禁词命中）；进一步修正第 2 节与教学脚本为“AI 训练与验证过程中常用的 5 折交叉验证（CV）”并导出 `04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V4.pdf`（同步刷新 `.docx` 与 `_V1.pdf`），逐页视觉检查确认严格 4 页、全整表不跨页。

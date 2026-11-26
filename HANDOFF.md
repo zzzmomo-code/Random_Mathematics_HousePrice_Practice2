@@ -1,6 +1,8 @@
 # HANDOFF — 《随机数学》Practice 2：房价多模型回归建模与特征贡献度分析
 
-2026-11-27 Antigravity V3：针对 Codex V2 审查出的 4 点缺口完成端到端修正，最新版为 `04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V3.pdf`（同步刷新 `.docx` 与 `_V1.pdf`，正文标题不带版本号）：① 改用仅对最适合二次拟合的 2 个连续面积特征 `GrLivArea`、`TotalBsmtSF` 补充平方项、其余 6 项保持线性的 10 项部分二次模型（测试 `RMSE` 降至 `$10,926`，测试 `MAE` `$9,505`，测试 $R^2=0.9774$，`5` 折 `CV RMSE` `$11,756`），同步更新 `main_house_price_modeling.m` (`T2_PartialQuadratic`) 及 `practice2_house_price_clean.m` / `tutorial.m`；② 第 2 节补明人工智能防“背答案”（过拟合）的划分与 5 折交叉验证原理；③ 移除第 5 节附录冗余的 `Z_te` 变量；④ 统一第 4 节美元格式与 `5 折` 用词，清理本交接文档旧段落残留。
+2026-11-27 Antigravity V4：将第 2 节及教学脚本调整为“AI 训练与验证过程中常用的 5 折交叉验证（CV）”，因 `_V3.pdf` 正在 WPS 中打开，自动导出为 `04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V4.pdf`。
+
+2026-11-27 Antigravity V3：针对 Codex V2 审查出的 4 点缺口完成端到端修正，生成 `_V3.pdf`（同步刷新 `.docx` 与 `_V1.pdf`，正文标题不带版本号）：① 改用仅对最适合二次拟合的 2 个连续面积特征 `GrLivArea`、`TotalBsmtSF` 补充平方项、其余 6 项保持线性的 10 项部分二次模型（测试 `RMSE` 降至 `$10,926`，测试 `MAE` `$9,505`，测试 $R^2=0.9774$，`5` 折 `CV RMSE` `$11,756`），同步更新 `main_house_price_modeling.m` (`T2_PartialQuadratic`) 及 `practice2_house_price_clean.m` / `tutorial.m`；② 第 2 节补明人工智能防“背答案”（过拟合）的划分与 5 折交叉验证原理；③ 移除第 5 节附录冗余的 `Z_te` 变量；④ 统一第 4 节美元格式与 `5 折` 用词，清理本交接文档旧段落残留。
 
 2026-11-27 Codex V2：第 2.1 节补正规方程的构造和 MATLAB 左除求解；第 2.2 节用训练误差下降、验证及测试误差上升解释可能的轻微过拟合。最新版为 `04_Report/Practice2_HousePrice_Regression_Report_裴翰章_V2.pdf`。
 
@@ -58,7 +60,7 @@
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\build_practice2_report.py`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\practice2_report_source.md`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.docx`
-- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V3.pdf`（最新 4 页无拆表报告，含 AI 划分与 5 折 CV 原理解释、部分二次项对比及第 5 节精简代码附录；主文件名被 WPS 占用时按 `_V1`/`_V2`/`_V3` 顺延）
+- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V4.pdf`（最新 4 页无拆表报告，含“AI 训练与验证过程中常用”措辞精修、部分二次项对比及第 5 节精简代码附录）
 - `E:\Random_Mathematics_Project_HousePrice\00_【给MoMo看】房价回归实验通俗教学指南.md`
 - `E:\Random_Mathematics_Project_HousePrice\README.md`
 - `E:\Random_Mathematics_Project_HousePrice\AI_CHAT.md`
