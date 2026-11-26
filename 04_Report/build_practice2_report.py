@@ -166,7 +166,7 @@ def build_markdown_source(eda: dict, res: dict) -> str:
     diff_pred = eq["max_test_pred_diff_NE_vs_GD"]
     diff_beta_gd = eq["max_beta_diff_GD_vs_fitlm"]
 
-    md = f"""Practice 2：房价回归建模与特征贡献度分析
+    md = f"""Experiment & Practice #2：房价回归建模与特征贡献度分析
 
 姓名：裴翰章\u3000\u3000学号：2025310104015\u3000\u3000指导教师：梁菁 教授\u3000\u3000课程：《随机数学》
 
@@ -174,7 +174,7 @@ def build_markdown_source(eda: dict, res: dict) -> str:
 
 # 1. 引言与数据概况
 
-本次实验利用真实房屋交易样本建立回归模型预测房价，并找出对房价贡献最大的前三个特征。数据来源于聚合数据平台，共有 $N = {ds['n_total']}$ 条样本、10 列且无缺失值。首列 `Id` 仅为 $1 \\sim 300$ 的顺序编号，建模前将它剔除，保留 8 个房屋物理属性作为输入 $\\mathbf{{X}} \\in \\mathbb{{R}}^{{300 \\times 8}}$，销售价格 `SalePrice`（美元）作为输出 $\\mathbf{{y}}$。
+本次实验利用真实房屋交易样本建立回归模型预测房价，并找出对房价贡献最大的前三个特征。数据来源于聚合数据平台，共有 $N = {ds['n_total']}$ 条样本、10 列且无缺失值。首列 `Id` 仅为 $1 \\sim 300$ 的顺序编号，建模前将它剔除，保留 8 个房屋特征作为预测变量（predictors）$x_1,\\dots,x_8$，销售价格 `SalePrice`（美元）作为响应变量（response）$y$。
 
 表 1 与图 1 给出了各变量的统计特征及相关性。地上居住面积 `GrLivArea` 与房价的相关系数最高（$r = {top1['univariate_r_all']:.4f}$），其次为综合质量 `OverallQual`（$r = {top2['univariate_r_all']:.4f}$）与车库容量 `GarageCars`（$r = {top3['univariate_r_all']:.4f}$），而 8 个特征彼此之间的相关性都很小（最大不超过 $0.13$）。
 
@@ -204,7 +204,7 @@ $$\\hat{{y}}_{{\\text{{line}}}} = \\beta_0 + \\beta_1 x$$
 
 $$\\hat{{y}}_{{\\text{{quad}}}} = \\beta_0 + \\beta_1 x + \\beta_2 x^2$$
 
-拟合得到一次直线 $\\hat{{y}} = {lin1_slope:.2f}\\,x + {lin1_int:,.2f}$，测试集 $\\text{{RMSE}} = \\${fmt_int(m_lin1['test']['rmse'])}$，$R^2 = {m_lin1['test']['r2']:.4f}$；改用二次抛物线后，测试集 $\\text{{RMSE}} = \\${fmt_int(m_quad1['test']['rmse'])}$，$R^2 = {m_quad1['test']['r2']:.4f}$（二次项系数 $p = {quad1_p:.4f} > 0.05$，并不显著）。如图 2 所示，两条拟合线几乎重合，残差仍达 $\\pm\\$100\\text{{k}}$，说明只看面积一个变量不够，需要把其余特征一起放入多元模型。
+拟合得到一次直线 $\\hat{{y}} = {lin1_slope:.2f}\\,x + {lin1_int:,.2f}$，测试集 $\\text{{RMSE}} = \\${fmt_int(m_lin1['test']['rmse'])}$，$R^2 = {m_lin1['test']['r2']:.4f}$；改用二次抛物线后，测试集 $\\text{{RMSE}} = \\${fmt_int(m_quad1['test']['rmse'])}$，$R^2 = {m_quad1['test']['r2']:.4f}$，误差几乎没有改善。如图 2 所示，两条拟合线几乎重合，残差仍达 $\\pm\\$100\\text{{k}}$，说明只看面积一个变量不够，需要把其余特征一起放入多元模型。
 
 ![](03_Figures/fig2_concise_line_vs_parabola.png)
 
@@ -212,7 +212,11 @@ $$\\hat{{y}}_{{\\text{{quad}}}} = \\beta_0 + \\beta_1 x + \\beta_2 x^2$$
 
 ## 2.2 多元线性回归与梯度下降求解
 
-将全部 8 个特征代入多元线性回归模型 $\\mathbf{{y}} = \\mathbf{{X}}\\boldsymbol{{\\beta}} + \\boldsymbol{{\\varepsilon}}$，我们先按课堂最小二乘正规方程直接求解析解，并与 MATLAB 自带的线性回归函数 `fitlm` 核对：
+将全部 8 个特征代入多元线性回归模型 $\\mathbf{{y}} = \\mathbf{{X}}\\boldsymbol{{\\beta}} + \\boldsymbol{{\\varepsilon}}$，最小二乘法的目标是使残差平方和 $Q$（即 $\\text{{SSE}}$）达到最小：
+
+$$Q = \\sum_{{i=1}}^{{n}}(y_i - \\hat{{y}}_i)^2$$
+
+对各回归系数求偏导并令偏导数为零，即可得到课堂推导的正规方程解析解，并与 MATLAB 自带的线性回归函数 `fitlm` 核对：
 
 $$\\hat{{\\boldsymbol{{\\beta}}}} = (\\mathbf{{X}}^\\top \\mathbf{{X}})^{{-1}}\\mathbf{{X}}^\\top \\mathbf{{y}}$$
 
@@ -256,11 +260,11 @@ $$\\Delta\\text{{RMSE}}_{{\\text{{CV}}}}^{{(j)}} = \\text{{RMSE}}_{{\\text{{CV}}
 
 图 4\u3000标准化回归系数与去特征误差增幅对比图（红色为前 3 贡献特征）
 
-从表 3 和图 4 可以看出，两种思路完全不同的方法对全部 8 个特征给出了完全一致的排序。对房价贡献最大的前三个特征依次是：**第 1 名 `GrLivArea`（地上居住面积）**、**第 2 名 `OverallQual`（综合质量）** 和 **第 3 名 `GarageCars`（车库容量）**，三者合计占全部标准化贡献的 ${top3_share:.1f}\\%$；只要去掉 `GrLivArea`，误差就会暴涨 $+\\${fmt_int(top1['delta_cv_rmse'])}$。此外，多变量回归还体现了单看相关系数不易看清的细节：`OverallQual` 与 `GarageCars` 单看相关系数几乎相同（$0.3529$ 与 $0.3513$），但放到一起控制住面积之后，`OverallQual` 的净贡献明显更大；而地块面积 `LotArea` 去掉后误差反而微降 $\\${abs(lot_row['delta_cv_rmse']):.0f}$，说明它对这组数据的房价几乎没有贡献。
+从表 3 和图 4 可以看出，两种思路完全不同的方法对全部 8 个特征给出了完全一致的排序。对房价贡献最大的前三个特征依次是：**第 1 名 `GrLivArea`（地上居住面积）**、**第 2 名 `OverallQual`（综合质量）** 和 **第 3 名 `GarageCars`（车库容量）**，三者合计占全部标准化贡献的 ${top3_share:.1f}\\%$；只要去掉 `GrLivArea`，误差就会明显增加 $+\\${fmt_int(top1['delta_cv_rmse'])}$。此外，多变量回归还体现了单看相关系数不易看清的细节：`OverallQual` 与 `GarageCars` 单看相关系数几乎相同（$0.3529$ 与 $0.3513$），但放到一起控制住面积之后，`OverallQual` 的净贡献明显更大；而地块面积 `LotArea` 去掉后误差反而微降 $\\${abs(lot_row['delta_cv_rmse']):.0f}$，说明它对这组数据的房价几乎没有贡献。
 
 # 4. 结论
 
-1. 相比只用单特征做直线或抛物线拟合，将全部 8 个物理特征纳入多元线性回归后，模型预测误差大幅降低、拟合优度显著提升，能够较准确地完成房价预测任务。
+1. 相比只用单特征做直线或抛物线拟合，将全部 8 个物理特征纳入多元线性回归后，模型预测误差大幅降低、拟合效果明显提升，能够较准确地完成房价预测任务。
 2. 最小二乘正规方程、MATLAB 内置函数 `fitlm` 与手动梯度下降三种求解方式结果一致，从解析公式和数值迭代两方面互相验证了回归模型的准确性。
 3. 消除单位差异后，标准化回归系数与逐个去特征法一致表明，对房价贡献最大的前三个特征依次为地上居住面积 `GrLivArea`、综合质量 `OverallQual` 和车库容量 `GarageCars`，符合现实购房看重面积、品质和车位的常识。
 """
@@ -688,20 +692,40 @@ try {{
         raise RuntimeError(f"Word COM 导出失败:\nSTDOUT: {res.stdout}\nSTDERR: {res.stderr}")
 
 
-def export_pdf_via_word_com(docx_path: Path, primary_pdf: Path, fallback_pdf: Path) -> Path:
+def _is_writable(path: Path) -> bool:
+    if not path.exists():
+        return True
     try:
-        _run_word_com_export(docx_path, primary_pdf)
-        if primary_pdf.exists():
-            print(f"[OK] PDF 导出完成: {primary_pdf}")
-            return primary_pdf
-    except Exception as e:
-        print(f"[WARN] 主 PDF 导出失败 ({e})，尝试写入备用路径: {fallback_pdf}")
+        with open(path, "r+b"):
+            return True
+    except OSError:
+        return False
 
-    _run_word_com_export(docx_path, fallback_pdf)
-    if not fallback_pdf.exists():
-        raise FileNotFoundError(f"PDF 导出后未找到文件: {fallback_pdf}")
-    print(f"[OK] PDF 导出完成（备用路径）: {fallback_pdf}")
-    return fallback_pdf
+
+def export_pdf_via_word_com(docx_path: Path, primary_pdf: Path, fallback_pdf: Path) -> Path:
+    candidates = [
+        primary_pdf,
+        fallback_pdf,
+        primary_pdf.with_name(f"{primary_pdf.stem}_定稿版.pdf"),
+    ]
+    for idx in range(2, 6):
+        candidates.append(primary_pdf.with_name(f"{primary_pdf.stem}_定稿版_v{idx}.pdf"))
+
+    last_err = None
+    for target in candidates:
+        if not _is_writable(target):
+            print(f"[WARN] PDF 目标被占用，跳过: {target}")
+            continue
+        try:
+            _run_word_com_export(docx_path, target)
+            if target.exists():
+                print(f"[OK] PDF 导出完成: {target}")
+                return target
+        except Exception as e:
+            last_err = e
+            print(f"[WARN] PDF 导出失败 ({target}): {e}")
+
+    raise FileNotFoundError(f"所有候选 PDF 路径均导出失败，最后错误: {last_err}")
 
 
 def self_audit_docx(docx_path: Path) -> None:
@@ -724,6 +748,7 @@ def self_audit_docx(docx_path: Path) -> None:
         "斯皮尔曼", "Spearman", "皮尔逊", "Pearson", "核密度", "KDE",
         "遮蔽效应", "方差膨胀", "无泄露", "框架", "揭示", "参考文献",
         "岭回归", "Ridge", "Lasso", "决策树", "随机森林", "梯度提升", "GBDT", "LSBoost", "OOB", "4 阶层",
+        "显著", "p =",
         "王昊坤", "陈振夫", "百分百", "穷尽", "万无一失",
     ]
     hits = [t for t in banned_terms if t in plain_text]

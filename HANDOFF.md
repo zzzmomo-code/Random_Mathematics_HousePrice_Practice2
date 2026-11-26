@@ -51,7 +51,7 @@
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\build_practice2_report.py`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\practice2_report_source.md`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.docx`
-- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_精简版.pdf`（因旧版 PDF 曾被查看器占用，最新版安全导出至 `_精简版.pdf`，共 4 页完整无拆表）
+- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_定稿版.pdf`（因先前 PDF 被 WPS 占用，自动导出至 `_定稿版.pdf`，严格 4 页完整无拆表，已对齐梁菁老师课件/作业表述并剔除课外 `p` 值/显著性词汇）
 - `E:\Random_Mathematics_Project_HousePrice\00_【给MoMo看】房价回归实验通俗教学指南.md`
 - `E:\Random_Mathematics_Project_HousePrice\README.md`
 - `E:\Random_Mathematics_Project_HousePrice\AI_CHAT.md`

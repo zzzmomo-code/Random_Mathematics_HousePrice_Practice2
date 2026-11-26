@@ -48,3 +48,15 @@
   1. **MATLAB 精简白底插图**：新建 `02_MATLAB_Modeling\generate_concise_report_figures.m` 实跑导出 4 张质朴白底图（`fig1_concise_eda.png`、`fig2_concise_line_vs_parabola.png`、`fig3_ols_fit_and_gd.png`、`fig4_feature_importance_top3.png`），放大插入宽度至 5.85 英寸方便教师阅览。
   2. **仅留唯一最简课内拓展**：报告聚焦单特征直线/抛物线 → 多元线性回归（正规方程 / `fitlm`）+ 唯一课内微积分拓展（手动批量梯度下降）；特征贡献度详尽通俗讲解标准化回归系数与逐个去特征误差增幅两种方法，彻底剔除 `VIF`/条件数/偏度/峰度/Jarque-Bera/MAPE/斯皮尔曼/皮尔逊/KDE/多项式交互/Ridge/Lasso/树集成与参考文献。
   3. **排版自检与 PDF 逐页验收**：`04_Report\Practice2_HousePrice_Regression_Report_裴翰章.docx`（59 个 OMML 公式 / 9 个一式一行块公式，0 未渲染 LaTeX，0 页眉，0 非白底纹，0 禁词命中）与 `04_Report\Practice2_HousePrice_Regression_Report_裴翰章_精简版.pdf`（**严格 4 页**，表 1–3 全整表不跨页，年份无千分位逗号，`BedroomAbvGr` 不折行）已通过逐页视觉核查。
+
+---
+
+## [2026-11-26] 阶段四：对齐梁菁老师课件术语与作业要求的最终定稿
+
+- **课件核对来源**：梁菁老师上传的 `Experiment & Practice #2`、`Chapter 10: Linear Statistical Models`、`Chapter 4` 与 `Homework #5 / #7`。
+- **精确对齐调整**：
+  1. 标题改为 `Experiment & Practice #2：房价回归建模与特征贡献度分析`，第 1 节明确引入课堂术语**预测变量（predictors）$x_1,\dots,x_8$** 与**响应变量（response）$y$**。
+  2. 剔除仅剩的课外假设检验表述（二次项系数 $p$ 值、`显著`、`暴涨`），并在 `self_audit_docx` 禁词表新增 `"显著"` 与 `"p ="`。
+  3. 第 2.2 节补入课堂最小二乘目标函数 $Q = \sum_{i=1}^{n}(y_i - \hat{y}_i)^2$（即残差平方和 $\text{SSE}$）及“求偏导置零得正规方程”的推导衔接。
+  4. 为 `export_pdf_via_word_com` 增加占用检测与 `_定稿版.pdf` 自动降级保存逻辑。
+- **验证结果**：`build_practice2_report.py` 零报错运行完成（OMML `61 / 10`，0 未渲染 LaTeX，0 页眉，0 非白底纹，0 禁词命中）；`04_Report\Practice2_HousePrice_Regression_Report_裴翰章_定稿版.pdf` 逐页检查确认严格 4 页、全整表不跨页。
