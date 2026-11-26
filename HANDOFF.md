@@ -1,5 +1,11 @@
 # HANDOFF — 《随机数学》Practice 2：房价多模型回归建模与特征贡献度分析
 
+2026-11-27 Antigravity V3：针对 Codex V2 审查出的 4 点缺口完成端到端修正，最新版为 `04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V3.pdf`（同步刷新 `.docx` 与 `_V1.pdf`，正文标题不带版本号）：① 改用仅对最适合二次拟合的 2 个连续面积特征 `GrLivArea`、`TotalBsmtSF` 补充平方项、其余 6 项保持线性的 10 项部分二次模型（测试 `RMSE` 降至 `$10,926`，测试 `MAE` `$9,505`，测试 $R^2=0.9774$，`5` 折 `CV RMSE` `$11,756`），同步更新 `main_house_price_modeling.m` (`T2_PartialQuadratic`) 及 `practice2_house_price_clean.m` / `tutorial.m`；② 第 2 节补明人工智能防“背答案”（过拟合）的划分与 5 折交叉验证原理；③ 移除第 5 节附录冗余的 `Z_te` 变量；④ 统一第 4 节美元格式与 `5 折` 用词，清理本交接文档旧段落残留。
+
+2026-11-27 Codex V2：第 2.1 节补正规方程的构造和 MATLAB 左除求解；第 2.2 节用训练误差下降、验证及测试误差上升解释可能的轻微过拟合。最新版为 `04_Report/Practice2_HousePrice_Regression_Report_裴翰章_V2.pdf`。
+
+2026-11-27 Codex：已核对老师的《Experiment & Practice #2》，数据切分和五折交叉验证均为本实验自行补充；题目允许直线或多项式，未规定加入二次项。报告仅精简说明数据划分及五折验证，并将结论合并为一段；新版 PDF 因主文件被占用导出为同名 `_V1.pdf`。
+
 > 面向联邦 AI 协作的权威交接文档（机器可读，精确路径与数值严格对应 `eda_summary.json` / `results_summary.json`）。
 
 ---
@@ -17,8 +23,8 @@
   - Pandoc 3.9.0.2：`C:\Users\48747\miniconda3\Library\bin\pandoc.exe`
   - PDF 导出：Microsoft Word COM（Windows 原生）
 - **当前范围与边界**：
-  - **2026-11-26 精简审校定稿**：正式中文 `Practice Report`（DOCX / PDF）已按用户最新要求重构为 **4 页纯课堂口吻论文格式**：仅保留单特征直线/抛物线拟合、多元线性回归（正规方程/`fitlm`）及**唯一最简课内拓展（手动批量梯度下降）**，并采用**标准化回归系数**与**逐个去特征误差增幅**两种原理直白的贡献度评价方法；彻底去除参考文献与 `VIF`/条件数/偏度/峰度/Jarque-Bera/MAPE/斯皮尔曼/皮尔逊/KDE/多项式交互/Ridge/Lasso/决策树/随机森林/GBDT 等过度专业或课外内容。
-  - 原有 `main_house_price_modeling.m` 与 `results_summary.json` 仍完整保留在 `02_MATLAB_Modeling\` 中作为全量对照备份；报告专用 4 张质朴白底图由 `02_MATLAB_Modeling\generate_concise_report_figures.m` 生成。
+  - **2026-11-27 V3 最终课堂论文格式**：正式中文报告（`.docx` / `_V3.pdf`）严格控制为 **4 页纯课堂口吻**：聚焦 **8 特征多元一次线性回归**（正规方程左除 + MATLAB `fitlm` 互证）vs **10 项部分二次拟合**（仅对 `GrLivArea` 与 `TotalBsmtSF` 补充二次项，其余 6 项保持线性），并采用**标准化回归系数**与**逐个去特征 5 折 CV 误差增幅**排序特征贡献；彻底剔除单变量、梯度下降、树模型、参考文献及过度专业术语。
+  - 原有 `main_house_price_modeling.m` 与 `results_summary.json` 保留全量 13 个对照模型备份（含 `T2_PartialQuadratic`）；报告专用 3 张质朴白底图由 `02_MATLAB_Modeling\generate_concise_report_figures.m` 生成；另交付精简提交版与详注教学版两个独立 MATLAB 脚本（`practice2_house_price_clean.m` / `practice2_house_price_tutorial.m`）。
   - **英文版报告**：按用户确认方案，待中文版审核通过后视需要再生成。
   - 数据源为聚合数据 300 条学习样本，结果仅代表该样本集规律，不含区位/学区/宏观变量。
 
@@ -52,7 +58,7 @@
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\build_practice2_report.py`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\practice2_report_source.md`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.docx`
-- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.pdf`（主 PDF 已刷新为最新版；脚本内置占用降级后缀已全面改为 `_V1`/`_V2`/`_V3`... 且仅用于文件名、不写入报告标题；严格 4 页完整无拆表）
+- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V3.pdf`（最新 4 页无拆表报告，含 AI 划分与 5 折 CV 原理解释、部分二次项对比及第 5 节精简代码附录；主文件名被 WPS 占用时按 `_V1`/`_V2`/`_V3` 顺延）
 - `E:\Random_Mathematics_Project_HousePrice\00_【给MoMo看】房价回归实验通俗教学指南.md`
 - `E:\Random_Mathematics_Project_HousePrice\README.md`
 - `E:\Random_Mathematics_Project_HousePrice\AI_CHAT.md`

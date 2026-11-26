@@ -35,10 +35,13 @@ X = T{:, features};
 y = T{:, 'SalePrice'};   % 响应变量 y（300 行 x 1 列，单位：美元）
 [N, p] = size(X);        % N = 300 条样本，p = 8 个预测变量
 
-%% 步骤 2：固定随机种子、划分 8:2 数据集与 5 折交叉验证（CV）
-% 固定随机种子为 42，保证每次运行划分结果一模一样，便于复现和检查
+%% 步骤 2：为什么人为划分 8:2 训练集/测试集 + 5 折交叉验证（CV）？
+% 题目原数据并没有分成训练和验证两份。我们借鉴人工智能/机器学习的评估办法：
+%   1) 把 300 条样本人为按 8:2 分成训练集（240 条，相当于“平时练习题”）和测试集（60 条，相当于“闭卷期末考”），
+%      防止模型只会“背答案”（过拟合），用来验证它对没见过的新房子到底能不能预测准；
+%   2) 在 240 条训练集内部再做 5 折交叉验证（CV）：把训练数据均分成 5 份，每次用 4 份拟合、1 份检验，
+%      轮流 5 轮求平均误差，这样样本利用率更高、评估结果更稳健。
 rng(42, 'twister');
-% HoldOut=0.20 表示随机抽 20%（60 条）作为独立测试集，其余 80%（240 条）作为训练集
 cvHold = cvpartition(N, 'HoldOut', 0.20);
 idxTr = training(cvHold);   % 长度为 300 的逻辑向量，训练集位置为 1
 idxTe = test(cvHold);       % 测试集位置为 1
@@ -46,7 +49,7 @@ idxTe = test(cvHold);       % 测试集位置为 1
 X_tr = X(idxTr, :); y_tr = y(idxTr);
 X_te = X(idxTe, :); y_te = y(idxTe);
 
-% 在训练集（240 条）内部再划分 5 折交叉验证：每次拿 4 折建模、1 折验证，轮流 5 次求平均误差
+% 在训练集（240 条）内部划分 5 折交叉验证
 rng(42, 'twister');
 K = 5;
 cv5 = cvpartition(size(X_tr, 1), 'KFold', K);
@@ -89,9 +92,11 @@ pred_lin_tr   = Xb_tr * beta_ne;
 pred_lin_te   = Xb_te * beta_ne;
 pred_fitlm_te = predict(mdl_ols, X_te);
 
-%% 步骤 4：多元二次多项式回归（加入每个特征的平方项 x_j^2，共 16 项）
-% 目的：检验房价与特征之间是否存在二次弯曲关系，看看加上平方项后效果会不会更好
-% 注意：构造平方项前先做标准化（减均值除以标准差），避免平方后数值太大影响计算精度
+%% 步骤 4：部分二次项拟合补充（最适合二次的 2 个面积特征取二次 + 其余 6 个保持线性，共 10 项）
+% 为什么只选第 2 列 GrLivArea（地上面积）和第 4 列 TotalBsmtSF（地下室面积）加平方项？
+% 因为这俩是跨度最宽的连续面积特征，大面积边际涨价略缓；单独试加二次项时也数它俩降误差最明显，
+% 其余如车位数(0~3)、卧室数(1~5)本身就是少数整数，保持线性反而更干净，不会过拟合。
+quadCols = [2, 4];
 cvRmseQuad = zeros(K, 1);
 for k = 1:K
     tr = training(cv5, k);
@@ -103,21 +108,21 @@ for k = 1:K
     Z_tr_k = (X_tr(tr, :) - mu_k) ./ sd_k;
     Z_va_k = (X_tr(va, :) - mu_k) ./ sd_k;
 
-    % 把 8 个一次标准化特征 Z 和 8 个平方项 Z.^2 拼在一起（再加上截距列全 1）
-    Phi_tr_k = [ones(sum(tr), 1), Z_tr_k, Z_tr_k.^2];
-    Phi_va_k = [ones(sum(va), 1), Z_va_k, Z_va_k.^2];
+    % 8 个一次项 + 2 个选中面积特征的平方项 Z(:, [2,4]).^2（再加全 1 截距列）
+    Phi_tr_k = [ones(sum(tr), 1), Z_tr_k, Z_tr_k(:, quadCols).^2];
+    Phi_va_k = [ones(sum(va), 1), Z_va_k, Z_va_k(:, quadCols).^2];
 
     b_qk = Phi_tr_k \ y_tr(tr);
     cvRmseQuad(k) = calcRmse(y_tr(va), Phi_va_k * b_qk);
 end
 
-% 在全训练集（240 条）上拟合多元二次多项式并在测试集（60 条）上验证
+% 在全训练集（240 条）上拟合部分二次模型并在测试集（60 条）上验证
 mu_tr = mean(X_tr, 1);
 sd_tr = std(X_tr, 0, 1);
 Z_tr = (X_tr - mu_tr) ./ sd_tr;   % 训练集标准化矩阵（后续方法 1 也要直接用它）
 Z_te = (X_te - mu_tr) ./ sd_tr;   % 测试集必须使用训练集的均值和标准差来缩放
-Phi_tr = [ones(size(X_tr, 1), 1), Z_tr, Z_tr.^2];
-Phi_te = [ones(size(X_te, 1), 1), Z_te, Z_te.^2];
+Phi_tr = [ones(size(X_tr, 1), 1), Z_tr, Z_tr(:, quadCols).^2];
+Phi_te = [ones(size(X_te, 1), 1), Z_te, Z_te(:, quadCols).^2];
 beta_quad = Phi_tr \ y_tr;
 pred_quad_tr = Phi_tr * beta_quad;
 pred_quad_te = Phi_te * beta_quad;
@@ -126,7 +131,7 @@ pred_quad_te = Phi_te * beta_quad;
 fprintf('================ 多元回归模型性能对比 ================\n');
 fprintf('多元一次线性 (8项)   | 训练RMSE=$%.0f | 5折CV RMSE=$%.0f | 测试RMSE=$%.0f | 测试MAE=$%.0f | 测试R^2=%.4f\n', ...
     calcRmse(y_tr, pred_lin_tr), mean(cvRmseLin), calcRmse(y_te, pred_lin_te), calcMae(y_te, pred_lin_te), calcR2(y_te, pred_lin_te));
-fprintf('多元二次多项式 (16项)| 训练RMSE=$%.0f | 5折CV RMSE=$%.0f | 测试RMSE=$%.0f | 测试MAE=$%.0f | 测试R^2=%.4f\n', ...
+fprintf('部分二次拟合 (10项)  | 训练RMSE=$%.0f | 5折CV RMSE=$%.0f | 测试RMSE=$%.0f | 测试MAE=$%.0f | 测试R^2=%.4f\n', ...
     calcRmse(y_tr, pred_quad_tr), mean(cvRmseQuad), calcRmse(y_te, pred_quad_te), calcMae(y_te, pred_quad_te), calcR2(y_te, pred_quad_te));
 fprintf('正规方程与 fitlm 在测试集上的最大预测差值: %.2e 美元\n\n', max(abs(pred_lin_te - pred_fitlm_te)));
 

@@ -45,6 +45,7 @@ pred_lin_tr = Xb_tr * beta_ne;
 pred_lin_te = Xb_te * beta_ne;
 pred_fitlm_te = predict(mdl_ols, X_te);
 
+quadCols = [2, 4];
 cvRmseQuad = zeros(K, 1);
 for k = 1:K
     tr = training(cv5, k);
@@ -53,8 +54,8 @@ for k = 1:K
     sd_k = std(X_tr(tr, :), 0, 1);
     Z_tr_k = (X_tr(tr, :) - mu_k) ./ sd_k;
     Z_va_k = (X_tr(va, :) - mu_k) ./ sd_k;
-    Phi_tr_k = [ones(sum(tr), 1), Z_tr_k, Z_tr_k.^2];
-    Phi_va_k = [ones(sum(va), 1), Z_va_k, Z_va_k.^2];
+    Phi_tr_k = [ones(sum(tr), 1), Z_tr_k, Z_tr_k(:, quadCols).^2];
+    Phi_va_k = [ones(sum(va), 1), Z_va_k, Z_va_k(:, quadCols).^2];
     b_qk = Phi_tr_k \ y_tr(tr);
     cvRmseQuad(k) = calcRmse(y_tr(va), Phi_va_k * b_qk);
 end
@@ -63,16 +64,16 @@ mu_tr = mean(X_tr, 1);
 sd_tr = std(X_tr, 0, 1);
 Z_tr = (X_tr - mu_tr) ./ sd_tr;
 Z_te = (X_te - mu_tr) ./ sd_tr;
-Phi_tr = [ones(size(X_tr, 1), 1), Z_tr, Z_tr.^2];
-Phi_te = [ones(size(X_te, 1), 1), Z_te, Z_te.^2];
+Phi_tr = [ones(size(X_tr, 1), 1), Z_tr, Z_tr(:, quadCols).^2];
+Phi_te = [ones(size(X_te, 1), 1), Z_te, Z_te(:, quadCols).^2];
 beta_quad = Phi_tr \ y_tr;
 pred_quad_tr = Phi_tr * beta_quad;
 pred_quad_te = Phi_te * beta_quad;
 
 fprintf('=== 多元回归模型性能对比 ===\n');
-fprintf('多元一次线性 (8项)  | Train RMSE=$%.0f | 5折CV RMSE=$%.0f | Test RMSE=$%.0f | Test MAE=$%.0f | Test R^2=%.4f\n', ...
+fprintf('多元一次线性 (8项)   | Train RMSE=$%.0f | 5折CV RMSE=$%.0f | Test RMSE=$%.0f | Test MAE=$%.0f | Test R^2=%.4f\n', ...
     calcRmse(y_tr, pred_lin_tr), mean(cvRmseLin), calcRmse(y_te, pred_lin_te), calcMae(y_te, pred_lin_te), calcR2(y_te, pred_lin_te));
-fprintf('多元二次多项式(16项)| Train RMSE=$%.0f | 5折CV RMSE=$%.0f | Test RMSE=$%.0f | Test MAE=$%.0f | Test R^2=%.4f\n', ...
+fprintf('部分二次拟合 (10项)  | Train RMSE=$%.0f | 5折CV RMSE=$%.0f | Test RMSE=$%.0f | Test MAE=$%.0f | Test R^2=%.4f\n', ...
     calcRmse(y_tr, pred_quad_tr), mean(cvRmseQuad), calcRmse(y_te, pred_quad_te), calcMae(y_te, pred_quad_te), calcR2(y_te, pred_quad_te));
 fprintf('正规方程与 fitlm 最大预测差: %.2e\n\n', max(abs(pred_lin_te - pred_fitlm_te)));
 

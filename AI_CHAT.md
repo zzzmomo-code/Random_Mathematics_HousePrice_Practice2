@@ -73,3 +73,13 @@
   1. `02_MATLAB_Modeling\generate_concise_report_figures.m`：将图 2 重构为 `03_Figures\fig2_ols_fit_and_residuals.png`（预测 vs 实际散点 + 残差分布），MATLAB R2025b 零警告导出 3 张 300-DPI 白底图。
   2. 新建 `02_MATLAB_Modeling\practice2_house_price_clean.m` 与 `02_MATLAB_Modeling\practice2_house_price_tutorial.m`，在 MATLAB R2025b 实跑均退出码 0，数值与 `results_summary.json` 完全一致（测试集 `RMSE=$11,030`, `R^2=0.9770`；二次 `16` 项测试集 `RMSE=$11,095`；Top 3：`GrLivArea`/`OverallQual`/`GarageCars`）。
   3. `04_Report\build_practice2_report.py` 更新并在 `self_audit_docx` 新增 `"梯度下降"`、`"批量梯度"`、`"单特征"`、`"单变量"` 禁词拦截；生成报告通过审计（OMML `52 / 7`，0 未渲染 LaTeX，0 页眉，0 非白底纹，0 禁词命中），`Practice2_HousePrice_Regression_Report_裴翰章.pdf` 逐页视觉检查通过（严格 4 页，标题单行居中，3 张表整表不跨页，第 4 页代码附录排版整洁）。脚本文件版本降级后缀已全面规范为仅作用于文件名的 `_V1`/`_V2`/`_V3`...（禁用“定稿/终版”命名）。
+
+---
+
+## [2026-11-27] 阶段六：V3 —— 审查 Codex V2 后补齐局部面积二次项、AI 划分原理与代码清理
+
+- **审查背景**：Codex（`V1`/`V2`）补充了左除正规方程讲解与精简了划分说明及结论，但仍保留全 8 特征 16 项平方对比、未明示“AI 防过拟合”原理、附录第 126 行多出一行未用的 `Z_te`、且第 4 节人民币/美元表述与前文略异。
+- **V3 修正与验证**：
+  1. **部分二次项建模（10 项）**：逐项排查 8 特征后选定跨度最大的两个连续面积特征 `GrLivArea` 与 `TotalBsmtSF` 加二次平方项，其余 6 个特征保持线性；同步更新 `main_house_price_modeling.m` (`T2_PartialQuadratic`)、`practice2_house_price_clean.m` 与 `practice2_house_price_tutorial.m`。MATLAB R2025b 实跑：`Train RMSE=$11,168`，`5折 CV RMSE=$11,756`，`Test RMSE=$10,926`（较全线性 `\$11,030` 再降）、`Test MAE=$9,505`、`Test R^2=0.9774`。
+  2. **报告正文与附录修复**：第 2 节开头明确解释借鉴 AI 训练防“背答案”（过拟合）的 8:2 划分与 5 折 CV 原理；第 2.2 节与表 2 改为“多元一次线性（8 项）vs 部分二次拟合（10 项）”；移除附录冗余 `Z_te`；统一第 4 节 `$11,030` / `$10,926` 与 `5 折` 用词。
+  3. **验收通过**：XML 自检通过（`OMML 48 / 7`，0 残留 LaTeX，0 页眉，0 非白底纹，0 禁词命中）；`04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V3.pdf`（同步刷新 `.docx` 与 `_V1.pdf`）逐页视觉检查确认严格 4 页、全整表不跨页。

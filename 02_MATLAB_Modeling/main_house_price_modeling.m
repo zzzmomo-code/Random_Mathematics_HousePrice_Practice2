@@ -381,10 +381,40 @@ rec_2e = make_model_record('T2_FullQuadratic', 'Tier 2: Multivariate Linear & Po
     y_train, pred_2e_tr, oof_2e, fold_rmse_2e, fold_r2_2e, y_test, pred_2e_te);
 model_records{end+1} = rec_2e;
 
-fprintf('  Pure Quadratic (16) : CV RMSE = $%.2f (R2 = %.4f) | Train R2 = %.4f | Test RMSE = $%.2f\n', ...
+% --- Model 2f: Partial Quadratic (8 linear + GrLivArea^2 + TotalBsmtSF^2, 10 terms) ---
+quad_cols = [2, 4]; % GrLivArea, TotalBsmtSF
+oof_2f = zeros(N_train, 1);
+fold_rmse_2f = zeros(K, 1); fold_r2_2f = zeros(K, 1);
+for k = 1:K
+    tr = fold_train_idx{k}; va = fold_val_idx{k};
+    mu_k = mean(X_train(tr, :), 1); sd_k = std(X_train(tr, :), 0, 1);
+    Z_tr_k = (X_train(tr, :) - mu_k) ./ sd_k;
+    Z_va_k = (X_train(va, :) - mu_k) ./ sd_k;
+    Phi_tr_k = [ones(sum(tr), 1), Z_tr_k, Z_tr_k(:, quad_cols).^2];
+    Phi_va_k = [ones(sum(va), 1), Z_va_k, Z_va_k(:, quad_cols).^2];
+    b_k = Phi_tr_k \ y_train(tr);
+    pred_va = Phi_va_k * b_k;
+    oof_2f(va) = pred_va;
+    m_k = eval_metrics(y_train(va), pred_va, p + numel(quad_cols));
+    fold_rmse_2f(k) = m_k.rmse; fold_r2_2f(k) = m_k.r2;
+end
+Phi_part_tr = [ones(N_train, 1), Z_train, Z_train(:, quad_cols).^2];
+Phi_part_te = [ones(N_test, 1),  Z_test,  Z_test(:, quad_cols).^2];
+b_part = Phi_part_tr \ y_train;
+pred_2f_tr = Phi_part_tr * b_part;
+pred_2f_te = Phi_part_te * b_part;
+
+rec_2f = make_model_record('T2_PartialQuadratic', 'Tier 2: Multivariate Linear & Poly', ...
+    'Partial Quadratic (GrLivArea+TotalBsmtSF^2, 10 terms)', p + numel(quad_cols), ...
+    y_train, pred_2f_tr, oof_2f, fold_rmse_2f, fold_r2_2f, y_test, pred_2f_te);
+model_records{end+1} = rec_2f;
+
+fprintf('  Pure Quadratic (16)    : CV RMSE = $%.2f (R2 = %.4f) | Train R2 = %.4f | Test RMSE = $%.2f\n', ...
     rec_2d.cv_rmse_mean, rec_2d.cv_r2_mean, rec_2d.train.r2, rec_2d.test.rmse);
-fprintf('  Full Quadratic (44) : CV RMSE = $%.2f (R2 = %.4f) | Train R2 = %.4f | Test RMSE = $%.2f\n', ...
+fprintf('  Full Quadratic (44)    : CV RMSE = $%.2f (R2 = %.4f) | Train R2 = %.4f | Test RMSE = $%.2f\n', ...
     rec_2e.cv_rmse_mean, rec_2e.cv_r2_mean, rec_2e.train.r2, rec_2e.test.rmse);
+fprintf('  Partial Quadratic (10) : CV RMSE = $%.2f (R2 = %.4f) | Test RMSE = $%.2f (R2 = %.4f)\n', ...
+    rec_2f.cv_rmse_mean, rec_2f.cv_r2_mean, rec_2f.test.rmse, rec_2f.test.r2);
 
 %% 5. TIER 3: Regularized Linear Regression (Ridge L2 & Lasso L1)
 fprintf('\n[Step 5 - Tier 3] Regularized Regression (Ridge L2 & Lasso L1, leak-free 5-fold CV)...\n');
