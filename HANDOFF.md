@@ -40,18 +40,19 @@
 - `E:\Random_Mathematics_Project_HousePrice\02_MATLAB_Modeling\generate_figures.m`
 - `E:\Random_Mathematics_Project_HousePrice\02_MATLAB_Modeling\results_summary.json`
 
-### 4 张精简版正式报告专用 MATLAB 300-DPI 白底图（`generate_concise_report_figures.m` 生成）
+### 3 张精简版正式报告专用 MATLAB 300-DPI 白底图（`generate_concise_report_figures.m` 生成）与双版本独立运行脚本
+- `E:\Random_Mathematics_Project_HousePrice\02_MATLAB_Modeling\practice2_house_price_clean.m`（精简无注释提交版，独立单文件可直接运行）
+- `E:\Random_Mathematics_Project_HousePrice\02_MATLAB_Modeling\practice2_house_price_tutorial.m`（详细中文注释教学版，按 6 步逐行讲解语法与思路）
 - `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig1_concise_eda.png`
-- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig2_concise_line_vs_parabola.png`
-- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig3_ols_fit_and_gd.png`
+- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig2_ols_fit_and_residuals.png`
 - `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig4_feature_importance_top3.png`
-*(全量拓展对比图 `fig1~fig5_*.png` 亦保留于 `03_Figures\` 目录备查)*
+*(全量拓展对比图与早期图亦保留于 `03_Figures\` 目录备查)*
 
 ### 报告、教学手册与协作文档
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\build_practice2_report.py`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\practice2_report_source.md`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.docx`
-- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_定稿版.pdf`（因先前 PDF 被 WPS 占用，自动导出至 `_定稿版.pdf`，严格 4 页完整无拆表，已对齐梁菁老师课件/作业表述并剔除课外 `p` 值/显著性词汇）
+- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_定稿版.pdf`（因先前 PDF 被 WPS 占用，自动导出至 `_定稿版.pdf`，严格 4 页完整无拆表：去掉单变量与梯度下降，聚焦 8 特征一次线性 vs 二次多项式对比，文末附精简核心 MATLAB 代码）
 - `E:\Random_Mathematics_Project_HousePrice\00_【给MoMo看】房价回归实验通俗教学指南.md`
 - `E:\Random_Mathematics_Project_HousePrice\README.md`
 - `E:\Random_Mathematics_Project_HousePrice\AI_CHAT.md`

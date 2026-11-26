@@ -42,8 +42,6 @@ for i = 1:numel(res.models)
     end
     m_map(item.id) = item;
 end
-rec_lin1 = m_map('T1_Single_Linear');
-rec_quad1 = m_map('T1_Single_Parabolic');
 rec_ols = m_map('T2_OLS_fitlm');
 
 % Reproduce exact 80/20 split (rng(42, 'twister') matches main script)
@@ -53,22 +51,14 @@ idx_te = test(cv_hold);
 X_tr = X(idx_tr, :); y_tr = y(idx_tr);
 X_te = X(idx_te, :); y_te = y(idx_te);
 
-% Extract Top-1 single feature (GrLivArea) and fit poly1/poly2 + OLS + GD
-top1_idx = 2; % GrLivArea
-x1_tr = X_tr(:, top1_idx);
-x1_te = X_te(:, top1_idx);
-mdl_poly1 = fitlm(x1_tr, y_tr, 'poly1');
-mdl_poly2 = fitlm(x1_tr, y_tr, 'poly2');
-
 mdl_ols = fitlm(X_tr, y_tr);
 pred_ols_tr = predict(mdl_ols, X_tr);
 pred_ols_te = predict(mdl_ols, X_te);
 
 X_tr_aug = [ones(size(X_tr, 1), 1), X_tr];
 beta_ne = (X_tr_aug' * X_tr_aug) \ (X_tr_aug' * y_tr);
-ne_train_mse = mean((X_tr_aug * beta_ne - y_tr).^2);
-
-gd = fit_ols_gd(X_tr, y_tr, 0.05, 2500, 1e-11);
+pred_ne_te = [ones(size(X_te, 1), 1), X_te] * beta_ne;
+max_diff_ne_fitlm = max(abs(pred_ne_te - pred_ols_te));
 
 % Styling setup
 font_name = 'Microsoft YaHei';
@@ -172,68 +162,13 @@ exportgraphics(f1, fullfile(fig_dir, 'fig1_concise_eda.png'), 'Resolution', 300,
 close(f1);
 
 %% ========================================================================
-%  FIG 2: Concise Single Feature Line vs Parabola
+%  FIG 2: Multivariate OLS Fit + Residual Plot
 %% ========================================================================
 f2 = figure('Units', 'inches', 'Position', [0.5, 0.5, 11.4, 4.6], 'Color', 'w');
 tl2 = tiledlayout(f2, 1, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
 
-x_grid = linspace(min([x1_tr; x1_te]) - 50, max([x1_tr; x1_te]) + 50, 250)';
-[yhat1, yci1] = predict(mdl_poly1, x_grid, 'Prediction', 'curve');
-[yhat2, ~]    = predict(mdl_poly2, x_grid, 'Prediction', 'curve');
-
-ax1 = nexttile(tl2, 1);
-hold(ax1, 'on');
-fill(ax1, [x_grid; flipud(x_grid)], [yci1(:,1); flipud(yci1(:,2))]/1e3, ...
-    c_navy, 'FaceAlpha', 0.14, 'EdgeColor', 'none', 'DisplayName', '一次直线 95% 置信带');
-scatter(ax1, x1_tr, y_tr/1e3, 24, c_navy, 'o', 'filled', 'MarkerFaceAlpha', 0.45, 'DisplayName', '训练集 (N=240)');
-scatter(ax1, x1_te, y_te/1e3, 34, c_amber, '^', 'filled', 'MarkerEdgeColor', [0.4 0.2 0], 'LineWidth', 0.5, 'DisplayName', '测试集 (N=60)');
-plot(ax1, x_grid, yhat1/1e3, '-', 'Color', c_navy, 'LineWidth', 2.3, 'DisplayName', '一次直线拟合');
-plot(ax1, x_grid, yhat2/1e3, '--', 'Color', c_crimson, 'LineWidth', 2.3, 'DisplayName', '二次抛物线拟合');
-
-grid(ax1, 'on'); ax1.GridAlpha = 0.22;
-set(ax1, 'FontName', font_name, 'FontSize', 9.0, 'Color', 'w', 'XColor', c_axis, 'YColor', c_axis, 'LineWidth', 1.0, 'Box', 'on');
-xlabel(ax1, '地上居住面积 GrLivArea (平方英尺)', 'FontName', font_name, 'FontSize', 9.8);
-ylabel(ax1, '房屋销售价格 SalePrice (千美元, $k)', 'FontName', font_name, 'FontSize', 9.8);
-title(ax1, '(a) 单特征 GrLivArea 一次直线与二次抛物线拟合', ...
-    'FontName', font_name, 'FontSize', 10.3, 'FontWeight', 'bold', 'Color', c_axis);
-ylim(ax1, [50, 480]); xlim(ax1, [400, 4150]);
-legend(ax1, 'Location', 'northwest', 'FontName', font_name, 'FontSize', 8.2, 'Color', 'w', 'TextColor', c_axis, 'EdgeColor', [0.75 0.75 0.75]);
-
-fit_box = sprintf('直线: 测试 R^2=%.3f, RMSE=$%.1fk\n抛物线: 测试 R^2=%.3f, RMSE=$%.1fk', ...
-    rec_lin1.test.r2, rec_lin1.test.rmse/1e3, rec_quad1.test.r2, rec_quad1.test.rmse/1e3);
-text(ax1, 0.97, 0.04, fit_box, 'Units', 'normalized', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom', ...
-    'FontName', font_name, 'FontSize', 8.1, 'Color', c_axis, 'BackgroundColor', [0.98 0.98 0.98], 'EdgeColor', [0.72 0.72 0.72], 'Margin', 5);
-
-ax2 = nexttile(tl2, 2);
-hold(ax2, 'on');
-res1_tr = (y_tr - predict(mdl_poly1, x1_tr)) / 1e3;
-res1_te = (y_te - predict(mdl_poly1, x1_te)) / 1e3;
-scatter(ax2, x1_tr, res1_tr, 24, c_navy, 'o', 'filled', 'MarkerFaceAlpha', 0.45, 'DisplayName', '训练集残差');
-scatter(ax2, x1_te, res1_te, 34, c_amber, '^', 'filled', 'MarkerEdgeColor', [0.4 0.2 0], 'LineWidth', 0.5, 'DisplayName', '测试集残差');
-yline(ax2, 0, '-', 'Color', [0.25 0.25 0.25], 'LineWidth', 1.3, 'HandleVisibility', 'off');
-plot(ax2, x_grid, (yhat2 - yhat1)/1e3, '--', 'Color', c_crimson, 'LineWidth', 2.2, 'DisplayName', '抛物线与直线差值');
-
-grid(ax2, 'on'); ax2.GridAlpha = 0.22;
-set(ax2, 'FontName', font_name, 'FontSize', 9.0, 'Color', 'w', 'XColor', c_axis, 'YColor', c_axis, 'LineWidth', 1.0, 'Box', 'on');
-xlabel(ax2, '地上居住面积 GrLivArea (平方英尺)', 'FontName', font_name, 'FontSize', 9.8);
-ylabel(ax2, '拟合残差 (千美元, $k)', 'FontName', font_name, 'FontSize', 9.8);
-title(ax2, '(b) 单特征一次拟合残差分布', ...
-    'FontName', font_name, 'FontSize', 10.3, 'FontWeight', 'bold', 'Color', c_axis);
-xlim(ax2, [400, 4150]);
-ylim(ax2, [-140, 195]);
-legend(ax2, 'Location', 'northwest', 'FontName', font_name, 'FontSize', 8.2, 'Color', 'w', 'TextColor', c_axis, 'EdgeColor', [0.75 0.75 0.75]);
-
-exportgraphics(f2, fullfile(fig_dir, 'fig2_concise_line_vs_parabola.png'), 'Resolution', 300, 'BackgroundColor', 'white');
-close(f2);
-
-%% ========================================================================
-%  FIG 3: Multivariate OLS Fit + Manual Batch Gradient Descent Convergence
-%% ========================================================================
-f3 = figure('Units', 'inches', 'Position', [0.5, 0.5, 11.4, 4.6], 'Color', 'w');
-tl3 = tiledlayout(f3, 1, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
-
 % Panel (a): Predicted vs Actual SalePrice
-ax1 = nexttile(tl3, 1);
+ax1 = nexttile(tl2, 1);
 hold(ax1, 'on');
 ytr_k = y_tr/1e3; ptr_k = pred_ols_tr/1e3;
 yte_k = y_te/1e3; pte_k = pred_ols_te/1e3;
@@ -248,8 +183,8 @@ grid(ax1, 'on'); ax1.GridAlpha = 0.22;
 axis(ax1, 'square');
 xlim(ax1, [min_v, max_v]); ylim(ax1, [min_v, max_v]);
 set(ax1, 'FontName', font_name, 'FontSize', 9.0, 'Color', 'w', 'XColor', c_axis, 'YColor', c_axis, 'LineWidth', 1.0, 'Box', 'on');
-xlabel(ax1, '实际房价 SalePrice ($k)', 'FontName', font_name, 'FontSize', 9.8);
-ylabel(ax1, '预测房价 Predicted ($k)', 'FontName', font_name, 'FontSize', 9.8);
+xlabel(ax1, '实际房价 SalePrice (千美元, $k)', 'FontName', font_name, 'FontSize', 9.8);
+ylabel(ax1, '预测房价 Predicted (千美元, $k)', 'FontName', font_name, 'FontSize', 9.8);
 title(ax1, '(a) 多元线性回归：预测房价与真实房价对比', ...
     'FontName', font_name, 'FontSize', 10.3, 'FontWeight', 'bold', 'Color', c_axis);
 legend(ax1, 'Location', 'northwest', 'FontName', font_name, 'FontSize', 8.2, 'Color', 'w', 'TextColor', c_axis, 'EdgeColor', [0.75 0.75 0.75]);
@@ -259,32 +194,35 @@ ols_box = sprintf('5折交叉验证 RMSE = $%.2fk (R^2=%.3f)\n测试集 RMSE = $
 text(ax1, 0.96, 0.04, ols_box, 'Units', 'normalized', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom', ...
     'FontName', font_name, 'FontSize', 8.1, 'Color', c_axis, 'BackgroundColor', [0.98 0.98 0.98], 'EdgeColor', [0.72 0.72 0.72], 'Margin', 4.5);
 
-% Panel (b): Batch GD MSE Convergence
-ax2 = nexttile(tl3, 2);
-n_show = min(250, gd.iterations);
-iters = (1:n_show)';
-semilogy(ax2, iters, gd.mse_history(1:n_show)/1e8, '-', 'Color', c_navy, 'LineWidth', 2.3, ...
-    'DisplayName', '手动梯度下降均方误差');
+% Panel (b): Residuals vs Predicted SalePrice
+ax2 = nexttile(tl2, 2);
 hold(ax2, 'on');
-yline(ax2, ne_train_mse/1e8, '--', 'Color', c_crimson, 'LineWidth', 1.8, ...
-    'DisplayName', sprintf('正规方程解析解 MSE = %.3f\\times10^8', ne_train_mse/1e8));
+res_tr_k = (y_tr - pred_ols_tr) / 1e3;
+res_te_k = (y_te - pred_ols_te) / 1e3;
 
-grid(ax2, 'on'); ax2.GridAlpha = 0.25;
+scatter(ax2, ptr_k, res_tr_k, 22, c_navy, 'o', 'filled', 'MarkerFaceAlpha', 0.48, 'DisplayName', '训练集残差');
+scatter(ax2, pte_k, res_te_k, 38, c_amber, 'd', 'filled', 'MarkerEdgeColor', [0.35 0.15 0], 'LineWidth', 0.6, 'DisplayName', '测试集残差');
+yline(ax2, 0, '-', 'Color', c_crimson, 'LineWidth', 1.8, 'DisplayName', '零残差基准线');
+yline(ax2, 25, '--', 'Color', c_teal, 'LineWidth', 1.2, 'DisplayName', '±$25k 参考带');
+yline(ax2, -25, '--', 'Color', c_teal, 'LineWidth', 1.2, 'HandleVisibility', 'off');
+
+grid(ax2, 'on'); ax2.GridAlpha = 0.22;
 set(ax2, 'FontName', font_name, 'FontSize', 9.0, 'Color', 'w', 'XColor', c_axis, 'YColor', c_axis, 'LineWidth', 1.0, 'Box', 'on');
-xlabel(ax2, '迭代次数（展示前 250 步）', 'FontName', font_name, 'FontSize', 9.8);
-ylabel(ax2, '训练集均方误差 MSE (10^8 美元^2)', 'FontName', font_name, 'FontSize', 9.8);
-title(ax2, '(b) 梯度下降法均方误差收敛曲线', ...
+xlabel(ax2, '预测房价 Predicted SalePrice (千美元, $k)', 'FontName', font_name, 'FontSize', 9.8);
+ylabel(ax2, '拟合残差：实际值 - 预测值 ($k)', 'FontName', font_name, 'FontSize', 9.8);
+title(ax2, '(b) 多元线性回归残差分布图', ...
     'FontName', font_name, 'FontSize', 10.3, 'FontWeight', 'bold', 'Color', c_axis);
-xlim(ax2, [1, n_show]);
-legend(ax2, 'Location', 'northeast', 'FontName', font_name, 'FontSize', 8.2, 'Color', 'w', 'TextColor', c_axis, 'EdgeColor', [0.75 0.75 0.75]);
+xlim(ax2, [min_v, max_v]);
+ylim(ax2, [-42, 42]);
+legend(ax2, 'Location', 'northwest', 'FontName', font_name, 'FontSize', 8.0, 'Color', 'w', 'TextColor', c_axis, 'EdgeColor', [0.75 0.75 0.75]);
 
-gd_box = sprintf('学习率 \\alpha = 0.05\n约 120 步收敛（共 %d 步）\n与正规方程预测最大差 %.2e', ...
-    gd.iterations, res.ols_equivalence_check.max_test_pred_diff_NE_vs_GD);
-text(ax2, 0.96, 0.62, gd_box, 'Units', 'normalized', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', ...
-    'FontName', font_name, 'FontSize', 8.1, 'Color', c_axis, 'BackgroundColor', [0.98 0.98 0.98], 'EdgeColor', [0.72 0.72 0.72], 'Margin', 5);
+res_box = sprintf('测试集 MAE = $%.2fk\n正规方程与 fitlm 最大差 = %.2e\n残差均匀分布，无明显弯曲趋势', ...
+    rec_ols.test.mae/1e3, max_diff_ne_fitlm);
+text(ax2, 0.97, 0.96, res_box, 'Units', 'normalized', 'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', ...
+    'FontName', font_name, 'FontSize', 8.0, 'Color', c_axis, 'BackgroundColor', [0.98 0.98 0.98], 'EdgeColor', [0.72 0.72 0.72], 'Margin', 4.5);
 
-exportgraphics(f3, fullfile(fig_dir, 'fig3_ols_fit_and_gd.png'), 'Resolution', 300, 'BackgroundColor', 'white');
-close(f3);
+exportgraphics(f2, fullfile(fig_dir, 'fig2_ols_fit_and_residuals.png'), 'Resolution', 300, 'BackgroundColor', 'white');
+close(f2);
 
 %% ========================================================================
 %  FIG 4: Two In-Course Feature Importance Methods (Top 3 Highlighted)
@@ -371,5 +309,5 @@ exportgraphics(f4, fullfile(fig_dir, 'fig4_feature_importance_top3.png'), 'Resol
 close(f4);
 
 set(0, 'DefaultFigureVisible', 'on');
-fprintf('[OK] Exported 4 concise figures cleanly.\n');
+fprintf('[OK] Exported 3 concise figures cleanly.\n');
 end

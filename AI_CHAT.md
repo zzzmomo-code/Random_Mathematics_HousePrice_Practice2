@@ -60,3 +60,16 @@
   3. 第 2.2 节补入课堂最小二乘目标函数 $Q = \sum_{i=1}^{n}(y_i - \hat{y}_i)^2$（即残差平方和 $\text{SSE}$）及“求偏导置零得正规方程”的推导衔接。
   4. 为 `export_pdf_via_word_com` 增加占用检测与 `_定稿版.pdf` 自动降级保存逻辑。
 - **验证结果**：`build_practice2_report.py` 零报错运行完成（OMML `61 / 10`，0 未渲染 LaTeX，0 页眉，0 非白底纹，0 禁词命中）；`04_Report\Practice2_HousePrice_Regression_Report_裴翰章_定稿版.pdf` 逐页检查确认严格 4 页、全整表不跨页。
+
+---
+
+## [2026-11-27] 阶段五：去单变量与梯度下降、聚焦多变量一次 vs 二次、加核心代码附录及双版本教学程序
+
+- **用户最新澄清与要求**：
+  1. 题目并未要求单变量回归，直接聚焦 8 特征多元线性回归，并与多元二次多项式回归（含平方项 $x_j^2$）对比；
+  2. 彻底删去未在课上重点讲授的手动梯度下降，回归求解仅保留正规方程与 MATLAB 内置函数 `fitlm` 互证；
+  3. 精简摘要文字并润色语句，第 3 节标题改为 `3. 特征贡献评估`，文末附精简核心 MATLAB 代码，并另备两版独立 MATLAB 程序（精简无注释版 + 详尽注释教学版）。
+- **核心改动与验证**：
+  1. `02_MATLAB_Modeling\generate_concise_report_figures.m`：将图 2 重构为 `03_Figures\fig2_ols_fit_and_residuals.png`（预测 vs 实际散点 + 残差分布），MATLAB R2025b 零警告导出 3 张 300-DPI 白底图。
+  2. 新建 `02_MATLAB_Modeling\practice2_house_price_clean.m` 与 `02_MATLAB_Modeling\practice2_house_price_tutorial.m`，在 MATLAB R2025b 实跑均退出码 0，数值与 `results_summary.json` 完全一致（测试集 `RMSE=$11,030`, `R^2=0.9770`；二次 `16` 项测试集 `RMSE=$11,095`；Top 3：`GrLivArea`/`OverallQual`/`GarageCars`）。
+  3. `04_Report\build_practice2_report.py` 更新并在 `self_audit_docx` 新增 `"梯度下降"`、`"批量梯度"`、`"单特征"`、`"单变量"` 禁词拦截；生成报告通过审计（OMML `52 / 7`，0 未渲染 LaTeX，0 页眉，0 非白底纹，0 禁词命中），`Practice2_HousePrice_Regression_Report_裴翰章_定稿版.pdf` 逐页视觉检查通过（严格 4 页，标题单行居中，3 张表整表不跨页，第 4 页代码附录排版整洁）。

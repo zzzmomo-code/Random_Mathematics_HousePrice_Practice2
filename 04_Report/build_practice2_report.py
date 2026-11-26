@@ -75,11 +75,9 @@ def build_markdown_source(eda: dict, res: dict) -> str:
     fi = res["feature_importance"]
 
     m_map = {m["id"]: m for m in res["models"]}
-    m_lin1 = m_map["T1_Single_Linear"]
-    m_quad1 = m_map["T1_Single_Parabolic"]
     m_ols_ne = m_map["T2_OLS_NormalEq"]
-    m_ols_gd = m_map["T2_OLS_GradDesc"]
     m_ols = m_map["T2_OLS_fitlm"]
+    m_quad_multi = m_map["T2_PureQuadratic"]
 
     desc_map = {item["variable"]: item for item in eda["descriptive_stats"]}
     corr_map = {item["feature"]: item for item in eda["feature_target_correlations"]}
@@ -120,16 +118,14 @@ def build_markdown_source(eda: dict, res: dict) -> str:
         )
     table1_md = "\n".join(t1_rows)
 
-    # 表 2：模型对比（紧扣课内曲线拟合、多元回归正规方程及手动梯度下降单拓展）
+    # 表 2：多元一次线性 vs 多元二次多项式（purequadratic）
     model_rows_spec = [
-        ("单特征一次直线 (GrLivArea)", m_lin1, "1"),
-        ("单特征二次抛物线 (GrLivArea)", m_quad1, "2"),
-        ("多元线性回归（正规方程 / fitlm）", m_ols_ne, "8"),
-        ("多元线性回归（手动梯度下降）", m_ols_gd, "8"),
+        ("多元一次线性回归（正规方程 / fitlm）", m_ols_ne, "8"),
+        ("多元二次多项式回归（含平方项）", m_quad_multi, "16"),
     ]
     t2_rows = []
     for label, m, n_feat in model_rows_spec:
-        is_best = m["id"] in ("T2_OLS_NormalEq", "T2_OLS_GradDesc")
+        is_best = m["id"] == "T2_OLS_NormalEq"
         b = "**" if is_best else ""
         t2_rows.append(
             f"| {b}{label}{b} | {n_feat} | "
@@ -161,20 +157,18 @@ def build_markdown_source(eda: dict, res: dict) -> str:
     top3_share = top1["ols_std_share_pct"] + top2["ols_std_share_pct"] + top3["ols_std_share_pct"]
     lot_row = next(r for r in ranked if r["feature"] == "LotArea")
 
-    lin1_slope, lin1_int = m_lin1["coefficients_raw"][0], m_lin1["coefficients_raw"][1]
-    quad1_p = m_quad1["quad_term_p_value"]
-    diff_pred = eq["max_test_pred_diff_NE_vs_GD"]
-    diff_beta_gd = eq["max_beta_diff_GD_vs_fitlm"]
+    diff_pred = eq["max_test_pred_diff_NE_vs_fitlm"]
+    diff_beta = eq["max_beta_diff_NE_vs_fitlm"]
 
-    md = f"""Experiment & Practice #2：房价回归建模与特征贡献度分析
+    md = f"""Experiment & Practice #2：房价回归建模与特征贡献评估
 
 姓名：裴翰章\u3000\u3000学号：2025310104015\u3000\u3000指导教师：梁菁 教授\u3000\u3000课程：《随机数学》
 
-**摘要**：本文基于聚合数据平台提供的 300 条房价数据，剔除无实际含义的编号列 `Id` 后，利用其余 8 个房屋属性在 MATLAB R2025b 中完成房价回归建模与特征贡献度分析。模型上先比较单特征一次直线与二次抛物线拟合，再建立 8 特征多元线性回归，并采用正规方程、MATLAB 内置函数 `fitlm` 与手动批量梯度下降三种方式求解互证，在测试集上取得决定系数 $R^2 = {m_ols['test']['r2']:.4f}$、均方根误差 $\\text{{RMSE}} = \\${fmt_int(m_ols['test']['rmse'])}$ 的预测效果。随后通过标准化回归系数与逐个去特征法综合评估，一致确定对房价贡献最大的前三个特征依次为地上居住面积 `GrLivArea`、综合质量 `OverallQual` 与车库容量 `GarageCars`。
+**摘要**：本文基于 300 条房价样本（剔除编号列 `Id` 后保留 8 个房屋特征），在 MATLAB R2025b 中对比多元一次线性与二次多项式回归，并用正规方程与 `fitlm` 互证。一次多元线性回归在测试集上取得 $R^2 = {m_ols['test']['r2']:.4f}$、$\\text{{RMSE}} = \\${fmt_int(m_ols['test']['rmse'])}$；经标准化回归系数与逐个去特征法评估，贡献前三的特征依次为 `GrLivArea`、`OverallQual` 与 `GarageCars`。
 
 # 1. 引言与数据概况
 
-本次实验利用真实房屋交易样本建立回归模型预测房价，并找出对房价贡献最大的前三个特征。数据来源于聚合数据平台，共有 $N = {ds['n_total']}$ 条样本、10 列且无缺失值。首列 `Id` 仅为 $1 \\sim 300$ 的顺序编号，建模前将它剔除，保留 8 个房屋特征作为预测变量（predictors）$x_1,\\dots,x_8$，销售价格 `SalePrice`（美元）作为响应变量（response）$y$。
+本次实验利用真实房屋交易样本建立回归模型预测房价，并找出对房价贡献最大的前三个特征。数据共有 $N = {ds['n_total']}$ 条样本、10 列且无缺失值。首列 `Id` 仅为 $1 \\sim 300$ 的顺序编号，建模前将它剔除，保留 8 个房屋特征作为预测变量（predictors）$x_1,\\dots,x_8$，销售价格 `SalePrice`（美元）作为响应变量（response）$y$。
 
 表 1 与图 1 给出了各变量的统计特征及相关性。地上居住面积 `GrLivArea` 与房价的相关系数最高（$r = {top1['univariate_r_all']:.4f}$），其次为综合质量 `OverallQual`（$r = {top2['univariate_r_all']:.4f}$）与车库容量 `GarageCars`（$r = {top3['univariate_r_all']:.4f}$），而 8 个特征彼此之间的相关性都很小（最大不超过 $0.13$）。
 
@@ -196,23 +190,9 @@ $$\\text{{RMSE}} = \\sqrt{{\\frac{{1}}{{n}}\\sum_{{i=1}}^{{n}}(y_i - \\hat{{y}}_
 
 $$R^2 = 1 - \\frac{{\\sum_{{i=1}}^{{n}}(y_i - \\hat{{y}}_i)^2}}{{\\sum_{{i=1}}^{{n}}(y_i - \\bar{{y}})^2}}$$
 
-## 2.1 单变量线性与二次拟合
+## 2.1 多元线性回归建模与求解
 
-先选取相关系数最高的 `GrLivArea`，仿照曲线拟合工具箱思路分别用一次直线和二次抛物线去拟合房价：
-
-$$\\hat{{y}}_{{\\text{{line}}}} = \\beta_0 + \\beta_1 x$$
-
-$$\\hat{{y}}_{{\\text{{quad}}}} = \\beta_0 + \\beta_1 x + \\beta_2 x^2$$
-
-拟合得到一次直线 $\\hat{{y}} = {lin1_slope:.2f}\\,x + {lin1_int:,.2f}$，测试集 $\\text{{RMSE}} = \\${fmt_int(m_lin1['test']['rmse'])}$，$R^2 = {m_lin1['test']['r2']:.4f}$；改用二次抛物线后，测试集 $\\text{{RMSE}} = \\${fmt_int(m_quad1['test']['rmse'])}$，$R^2 = {m_quad1['test']['r2']:.4f}$，误差几乎没有改善。如图 2 所示，两条拟合线几乎重合，残差仍达 $\\pm\\$100\\text{{k}}$，说明只看面积一个变量不够，需要把其余特征一起放入多元模型。
-
-![](03_Figures/fig2_concise_line_vs_parabola.png)
-
-图 2\u3000单特征 `GrLivArea` 一次直线与二次抛物线拟合及残差对比
-
-## 2.2 多元线性回归与梯度下降求解
-
-将全部 8 个特征代入多元线性回归模型 $\\mathbf{{y}} = \\mathbf{{X}}\\boldsymbol{{\\beta}} + \\boldsymbol{{\\varepsilon}}$，最小二乘法的目标是使残差平方和 $Q$（即 $\\text{{SSE}}$）达到最小：
+将全部 8 个预测变量代入多元线性回归模型 $\\mathbf{{y}} = \\mathbf{{X}}\\boldsymbol{{\\beta}} + \\boldsymbol{{\\varepsilon}}$，最小二乘法的目标是使残差平方和 $Q$（即 $\\text{{SSE}}$）达到最小：
 
 $$Q = \\sum_{{i=1}}^{{n}}(y_i - \\hat{{y}}_i)^2$$
 
@@ -220,33 +200,35 @@ $$Q = \\sum_{{i=1}}^{{n}}(y_i - \\hat{{y}}_i)^2$$
 
 $$\\hat{{\\boldsymbol{{\\beta}}}} = (\\mathbf{{X}}^\\top \\mathbf{{X}})^{{-1}}\\mathbf{{X}}^\\top \\mathbf{{y}}$$
 
-在此基础上，再加入一个最贴近微积分知识的拓展方法——自己编写**批量梯度下降**程序，对标准化特征 $\\mathbf{{Z}}$ 沿负梯度方向逐步迭代更新参数（学习率 $\\alpha = {m_ols_gd['gd_lr']:.2f}$，迭代 {m_ols_gd['gd_iterations']} 步）：
+实验测得，正规方程与 `fitlm` 算出的系数最大差仅 ${fmt_sci(diff_beta)}$，测试集预测值最大差仅 ${fmt_sci(diff_pred)}$ 美元，两种求解方式结果完全一致。
 
-$$\\boldsymbol{{\\beta}}^{{(t+1)}} = \\boldsymbol{{\\beta}}^{{(t)}} - \\frac{{\\alpha}}{{n}}\\mathbf{{Z}}^\\top(\\mathbf{{Z}}\\boldsymbol{{\\beta}}^{{(t)}} - \\mathbf{{y}})$$
+## 2.2 一次线性与二次多项式回归对比
 
-如表 2 和图 3 所示，8 个特征全部加入后模型误差大幅下降，测试集 $\\text{{RMSE}}$ 从 $\\${fmt_int(m_lin1['test']['rmse'])}$ 降到 $\\${fmt_int(m_ols['test']['rmse'])}$，$R^2$ 升至 ${m_ols['test']['r2']:.4f}$，预测值与真实值紧贴在 $y=x$ 直线附近（图 3a）。手动梯度下降大约跑 120 步就稳步收敛到正规方程的解析解（图 3b），两种方式在测试集上的预测差值最大仅 ${fmt_sci(diff_pred)}$（系数最大差 ${fmt_sci(diff_beta_gd)}$），说明解析求解与迭代寻优结果完全一致。
+为检验房价与各特征之间是否存在二次弯曲关系，在 8 个一次项的基础上，进一步为每个标准化特征加入平方项 $x_j^2$，构成 16 项多元二次多项式模型进行对照。
 
-表 2\u3000单变量与多元线性回归模型性能对比（RMSE、MAE 单位：美元）
+表 2\u3000多元一次线性与二次多项式回归模型性能对比（RMSE、MAE 单位：美元）
 
-| 模型名称 | 特征数 | 训练 RMSE | 5 折交叉验证 RMSE | 测试 RMSE | 测试 MAE | 测试 $R^2$ |
+| 模型名称 | 特征项数 | 训练 RMSE | 5 折交叉验证 RMSE | 测试 RMSE | 测试 MAE | 测试 $R^2$ |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 {table2_md}
 
-![](03_Figures/fig3_ols_fit_and_gd.png)
+从表 2 可以看出，加入二次平方项后，虽然训练集误差略有降低（$\\${fmt_int(m_ols_ne['train']['rmse'])}$ 降至 $\\${fmt_int(m_quad_multi['train']['rmse'])}$），但 5 折交叉验证 RMSE 反而从 $\\${fmt_int(m_ols_ne['cv_rmse_mean'])}$ 升至 $\\${fmt_int(m_quad_multi['cv_rmse_mean'])}$，测试集误差也变差至 $\\${fmt_int(m_quad_multi['test']['rmse'])}$。如图 2 所示，一次多元线性回归的预测房价紧贴 $y=x$ 参考线（测试集 $R^2 = {m_ols_ne['test']['r2']:.4f}$），残差平稳分布在 $\\pm\\$25\\text{{k}}$ 之间，没有明显弯曲趋势，说明这组房价数据用一次多元线性模型就已经很合适，不需要再加二次项。
 
-图 3\u3000多元线性回归预测效果图与梯度下降法均方误差收敛曲线
+![](03_Figures/fig2_ols_fit_and_residuals.png)
 
-# 3. 特征贡献度评估与关键特征识别
+图 2\u3000多元一次线性回归预测效果图与残差分布
 
-判断哪个特征对房价贡献最大时，不能直接拿多元回归的原始系数 $\\hat{{\\beta}}_j$ 比大小，因为各特征单位完全不同。例如表 3 里 `GarageCars` 每多 1 个车位涨价 $+\\$19,103$，而 `GrLivArea` 每多 1 平方英尺只涨 $+\\$54.79$，但面积动辄相差上千平方英尺，车位一共才 0～3 个。由于课堂上没有专门讲过特征重要性的排序方法，这里设计了两种原理简单、互相印证的评价方案：
+# 3. 特征贡献评估
 
-1. **方法 1（标准化回归系数 $|\\beta_j^*|$）**：先把每个特征减去均值再除以各自的标准差（即做标准化，消除平方英尺、年份、个数等单位差异），让所有特征都站在“变化 1 个标准差”的同一起跑线上再回归。此时算出的 $|\\beta_j^*|$ 直接表示该特征每波动 1 个标准差平均会引起多少美元的房价变化，消除了量纲偏差，数值越大贡献越强：
+判断哪个特征对房价贡献最大时，不能直接拿原始系数 $\\hat{{\\beta}}_j$ 比大小，因为各特征单位不同。例如表 3 里 `GarageCars` 每多 1 个车位涨价 $+\\$19,103$，而 `GrLivArea` 每多 1 平方英尺只涨 $+\\$54.79$，但面积动辄相差上千平方英尺，车位一共才 0～3 个。为此，本文采用两种原理简单、互相印证的贡献评价方法：
+
+1. **方法 1（标准化回归系数 $|\\beta_j^*|$）**：先把每个特征减去均值再除以各自的标准差，消除平方英尺、年份、个数等单位差异，让所有特征站在“变化 1 个标准差”的同一起跑线上再回归。算出的 $|\\beta_j^*|$ 直接表示该特征每波动 1 个标准差平均会引起多少美元的房价变化，数值越大贡献越强：
 
 $$z_{{ij}} = \\frac{{x_{{ij}} - \\bar{{x}}_j}}{{s_{{x_j}}}}$$
 
 $$\\beta_j^* = \\hat{{\\beta}}_j \\cdot s_{{x_j}}$$
 
-2. **方法 2（逐个去掉特征看误差增幅 $\\Delta\\text{{RMSE}}_{{\\text{{CV}}}}$）**：依次从 8 个特征中临时拿掉第 $j$ 个特征，只用其余 7 个特征重新建模并计算 5 折 CV 的 RMSE。拿掉某个特征后，预测误差涨得越多，说明它包含的信息越不能被其他特征替代，对预测房价也就越重要，这从模型依赖度的角度检验了特征贡献：
+2. **方法 2（逐个去掉特征看误差增幅 $\\Delta\\text{{RMSE}}_{{\\text{{CV}}}}$）**：依次从 8 个特征中临时拿掉第 $j$ 个特征，只用其余 7 个特征重新建模并计算 5 折 CV 的 RMSE。拿掉某个特征后预测误差涨得越多，说明它包含的信息越难被其他特征替代，对预测房价也就越重要：
 
 $$\\Delta\\text{{RMSE}}_{{\\text{{CV}}}}^{{(j)}} = \\text{{RMSE}}_{{\\text{{CV}}}}^{{(-j)}} - \\text{{RMSE}}_{{\\text{{CV}}}}^{{\\text{{full}}}}$$
 
@@ -258,16 +240,47 @@ $$\\Delta\\text{{RMSE}}_{{\\text{{CV}}}}^{{(j)}} = \\text{{RMSE}}_{{\\text{{CV}}
 
 ![](03_Figures/fig4_feature_importance_top3.png)
 
-图 4\u3000标准化回归系数与去特征误差增幅对比图（红色为前 3 贡献特征）
+图 3\u3000标准化回归系数与去特征误差增幅对比图（红色为前 3 贡献特征）
 
-从表 3 和图 4 可以看出，两种思路完全不同的方法对全部 8 个特征给出了完全一致的排序。对房价贡献最大的前三个特征依次是：**第 1 名 `GrLivArea`（地上居住面积）**、**第 2 名 `OverallQual`（综合质量）** 和 **第 3 名 `GarageCars`（车库容量）**，三者合计占全部标准化贡献的 ${top3_share:.1f}\\%$；只要去掉 `GrLivArea`，误差就会明显增加 $+\\${fmt_int(top1['delta_cv_rmse'])}$。此外，多变量回归还体现了单看相关系数不易看清的细节：`OverallQual` 与 `GarageCars` 单看相关系数几乎相同（$0.3529$ 与 $0.3513$），但放到一起控制住面积之后，`OverallQual` 的净贡献明显更大；而地块面积 `LotArea` 去掉后误差反而微降 $\\${abs(lot_row['delta_cv_rmse']):.0f}$，说明它对这组数据的房价几乎没有贡献。
+从表 3 和图 3 可以看出，两种方法对全部 8 个特征给出了完全一致的排序。对房价贡献最大的前三个特征依次是：**第 1 名 `GrLivArea`（地上居住面积）**、**第 2 名 `OverallQual`（综合质量）** 和 **第 3 名 `GarageCars`（车库容量）**，三者合计占全部标准化贡献的 ${top3_share:.1f}\\%$。相比之下，`OverallQual` 与 `GarageCars` 单看相关系数很接近（$0.3529$ 与 $0.3513$），但放进多元回归控制住面积后，`OverallQual` 的净贡献明显更大；而地块面积 `LotArea` 去掉后误差反而微降 $\\${abs(lot_row['delta_cv_rmse']):.0f}$，对房价几乎没有贡献。
 
 # 4. 结论
 
-1. 相比只用单特征做直线或抛物线拟合，将全部 8 个物理特征纳入多元线性回归后，模型预测误差大幅降低、拟合效果明显提升，能够较准确地完成房价预测任务。
-2. 最小二乘正规方程、MATLAB 内置函数 `fitlm` 与手动梯度下降三种求解方式结果一致，从解析公式和数值迭代两方面互相验证了回归模型的准确性。
-3. 消除单位差异后，标准化回归系数与逐个去特征法一致表明，对房价贡献最大的前三个特征依次为地上居住面积 `GrLivArea`、综合质量 `OverallQual` 和车库容量 `GarageCars`，符合现实购房看重面积、品质和车位的常识。
-"""
+1. 利用全部 8 个房屋特征建立的一次多元线性回归预测准确、残差平稳，加入二次平方项并未改善测试和交叉验证效果，说明该房价数据以一次线性关系为主。
+2. 最小二乘正规方程与 MATLAB 内置函数 `fitlm` 两种求解方式结果一致，从公式解析与工具箱函数两方面验证了回归模型的准确性。
+3. 标准化回归系数与逐个去特征法一致表明，对房价贡献前三的特征依次为地上居住面积 `GrLivArea`、综合质量 `OverallQual` 和车库容量 `GarageCars`。
+
+# 5. 附录：核心 MATLAB 代码
+
+```matlab
+% 1. 读取数据、剔除 Id 列并按 8:2 划分训练集与测试集
+T = readtable('数据样本.csv', 'VariableNamingRule', 'preserve');
+features = {{'OverallQual','GrLivArea','GarageCars','TotalBsmtSF', ...
+             'YearBuilt','FullBath','BedroomAbvGr','LotArea'}};
+X = T{{:, features}};  y = T{{:, 'SalePrice'}};
+rng(42, 'twister');  cvHold = cvpartition(size(X,1), 'HoldOut', 0.20);
+X_tr = X(training(cvHold), :);  y_tr = y(training(cvHold));
+X_te = X(test(cvHold), :);      y_te = y(test(cvHold));
+
+% 2. 多元一次线性回归（正规方程与 fitlm 互证）及二次多项式对比
+Xb_tr = [ones(size(X_tr,1),1), X_tr];  Xb_te = [ones(size(X_te,1),1), X_te];
+beta_ne = (Xb_tr' * Xb_tr) \\ (Xb_tr' * y_tr);
+mdl_ols = fitlm(X_tr, y_tr);
+pred_ne = Xb_te * beta_ne;  pred_fitlm = predict(mdl_ols, X_te);
+
+Z_tr = (X_tr - mean(X_tr,1)) ./ std(X_tr,0,1);
+Z_te = (X_te - mean(X_tr,1)) ./ std(X_tr,0,1);
+Phi_tr = [ones(size(X_tr,1),1), Z_tr, Z_tr.^2];
+beta_quad = Phi_tr \\ y_tr;
+
+% 3. 特征贡献评估：标准化回归系数 + 逐个去特征 5 折交叉验证误差增幅
+beta_std = abs(fitlm(Z_tr, y_tr).Coefficients.Estimate(2:end));
+rng(42, 'twister');  cv5 = cvpartition(size(X_tr,1), 'KFold', 5);
+for j = 1:8
+    keep_cols = setdiff(1:8, j);
+    % 对 X_tr(:, keep_cols) 重做 5 折交叉验证，计算去掉第 j 个特征后的 RMSE 增幅
+end
+```"""
     return md
 
 
@@ -529,7 +542,7 @@ def polish_word_document(
             p.paragraph_format.space_after = Pt(4)
             p.paragraph_format.line_spacing = 1.15
             for r in p.runs:
-                set_run_font(r, east_asia="黑体", size_pt=20.0, bold=True)
+                set_run_font(r, east_asia="黑体", size_pt=17.5, bold=True)
             continue
 
         if idx == 1:
@@ -638,6 +651,23 @@ def polish_word_document(
                 set_run_font(r, east_asia="宋体", size_pt=10.5)
             continue
 
+        if style_name.startswith("Source") or "Code" in style_name or "Verbatim" in style_name:
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            p.paragraph_format.first_line_indent = Pt(0)
+            p.paragraph_format.left_indent = Pt(10)
+            p.paragraph_format.space_before = Pt(2)
+            p.paragraph_format.space_after = Pt(2)
+            p.paragraph_format.line_spacing = 1.05
+            if p._p.pPr is not None:
+                for shd in p._p.pPr.findall(qn("w:shd")):
+                    p._p.pPr.remove(shd)
+            for r in p.runs:
+                if r._r.rPr is not None:
+                    for shd in r._r.rPr.findall(qn("w:shd")):
+                        r._r.rPr.remove(shd)
+                set_run_font(r, east_asia="宋体", size_pt=8.2, bold=False, latin="Consolas")
+            continue
+
         p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
         p.paragraph_format.left_indent = Pt(0)
         p.paragraph_format.first_line_indent = Pt(21)
@@ -648,6 +678,12 @@ def polish_word_document(
             p.paragraph_format.keep_with_next = True
         for r in p.runs:
             set_run_font(r, east_asia="宋体", size_pt=10.5)
+
+    # 彻底清理样式或代码块可能带入的非白底纹
+    for st_shd in list(doc.styles.element.iter(qn("w:shd"))):
+        parent = st_shd.getparent()
+        if parent is not None:
+            parent.remove(st_shd)
 
     for t_idx, table in enumerate(doc.tables):
         widths = table_widths_list[t_idx] if t_idx < len(table_widths_list) else None
@@ -748,7 +784,7 @@ def self_audit_docx(docx_path: Path) -> None:
         "斯皮尔曼", "Spearman", "皮尔逊", "Pearson", "核密度", "KDE",
         "遮蔽效应", "方差膨胀", "无泄露", "框架", "揭示", "参考文献",
         "岭回归", "Ridge", "Lasso", "决策树", "随机森林", "梯度提升", "GBDT", "LSBoost", "OOB", "4 阶层",
-        "显著", "p =",
+        "梯度下降", "批量梯度", "单特征", "单变量", "显著", "p =",
         "王昊坤", "陈振夫", "百分百", "穷尽", "万无一失",
     ]
     hits = [t for t in banned_terms if t in plain_text]
@@ -785,10 +821,9 @@ def main() -> None:
         [0.45, 1.72, 0.85, 1.45, 1.25, 1.05],         # 表 3 (6 列)
     ]
     fig_widths = {
-        1: (5.85, 2.55),
-        2: (5.85, 2.55),
-        3: (5.85, 2.55),
-        4: (5.85, 2.55),
+        1: (5.75, 2.48),
+        2: (5.75, 2.48),
+        3: (5.75, 2.48),
     }
 
     saved_docx = polish_word_document(
