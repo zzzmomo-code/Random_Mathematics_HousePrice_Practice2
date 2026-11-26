@@ -35,9 +35,9 @@ PANDOC_BIN = Path(r"C:\Users\48747\miniconda3\Library\bin\pandoc.exe")
 MD_PATH = REPORT_DIR / "practice2_report_source.md"
 DOCX_RAW_PATH = REPORT_DIR / "_tmp_pandoc_raw.docx"
 FINAL_DOCX_PATH = REPORT_DIR / "Practice2_HousePrice_Regression_Report_裴翰章.docx"
-FALLBACK_DOCX_PATH = REPORT_DIR / "Practice2_HousePrice_Regression_Report_裴翰章_精简版.docx"
+FALLBACK_DOCX_PATH = REPORT_DIR / "Practice2_HousePrice_Regression_Report_裴翰章_V1.docx"
 FINAL_PDF_PATH = REPORT_DIR / "Practice2_HousePrice_Regression_Report_裴翰章.pdf"
-FALLBACK_PDF_PATH = REPORT_DIR / "Practice2_HousePrice_Regression_Report_裴翰章_精简版.pdf"
+FALLBACK_PDF_PATH = REPORT_DIR / "Practice2_HousePrice_Regression_Report_裴翰章_V1.pdf"
 
 
 def load_json(path: Path) -> dict:
@@ -739,13 +739,9 @@ def _is_writable(path: Path) -> bool:
 
 
 def export_pdf_via_word_com(docx_path: Path, primary_pdf: Path, fallback_pdf: Path) -> Path:
-    candidates = [
-        primary_pdf,
-        fallback_pdf,
-        primary_pdf.with_name(f"{primary_pdf.stem}_定稿版.pdf"),
-    ]
-    for idx in range(2, 6):
-        candidates.append(primary_pdf.with_name(f"{primary_pdf.stem}_定稿版_v{idx}.pdf"))
+    candidates = [primary_pdf, fallback_pdf]
+    for idx in range(2, 10):
+        candidates.append(primary_pdf.with_name(f"{primary_pdf.stem}_V{idx}.pdf"))
 
     last_err = None
     for target in candidates:

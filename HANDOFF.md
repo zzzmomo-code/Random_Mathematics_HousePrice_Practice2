@@ -52,7 +52,7 @@
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\build_practice2_report.py`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\practice2_report_source.md`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.docx`
-- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_定稿版.pdf`（因先前 PDF 被 WPS 占用，自动导出至 `_定稿版.pdf`，严格 4 页完整无拆表：去掉单变量与梯度下降，聚焦 8 特征一次线性 vs 二次多项式对比，文末附精简核心 MATLAB 代码）
+- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.pdf`（主 PDF 已刷新为最新版；脚本内置占用降级后缀已全面改为 `_V1`/`_V2`/`_V3`... 且仅用于文件名、不写入报告标题；严格 4 页完整无拆表）
 - `E:\Random_Mathematics_Project_HousePrice\00_【给MoMo看】房价回归实验通俗教学指南.md`
 - `E:\Random_Mathematics_Project_HousePrice\README.md`
 - `E:\Random_Mathematics_Project_HousePrice\AI_CHAT.md`

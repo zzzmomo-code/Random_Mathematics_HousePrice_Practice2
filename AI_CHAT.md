@@ -72,4 +72,4 @@
 - **核心改动与验证**：
   1. `02_MATLAB_Modeling\generate_concise_report_figures.m`：将图 2 重构为 `03_Figures\fig2_ols_fit_and_residuals.png`（预测 vs 实际散点 + 残差分布），MATLAB R2025b 零警告导出 3 张 300-DPI 白底图。
   2. 新建 `02_MATLAB_Modeling\practice2_house_price_clean.m` 与 `02_MATLAB_Modeling\practice2_house_price_tutorial.m`，在 MATLAB R2025b 实跑均退出码 0，数值与 `results_summary.json` 完全一致（测试集 `RMSE=$11,030`, `R^2=0.9770`；二次 `16` 项测试集 `RMSE=$11,095`；Top 3：`GrLivArea`/`OverallQual`/`GarageCars`）。
-  3. `04_Report\build_practice2_report.py` 更新并在 `self_audit_docx` 新增 `"梯度下降"`、`"批量梯度"`、`"单特征"`、`"单变量"` 禁词拦截；生成报告通过审计（OMML `52 / 7`，0 未渲染 LaTeX，0 页眉，0 非白底纹，0 禁词命中），`Practice2_HousePrice_Regression_Report_裴翰章_定稿版.pdf` 逐页视觉检查通过（严格 4 页，标题单行居中，3 张表整表不跨页，第 4 页代码附录排版整洁）。
+  3. `04_Report\build_practice2_report.py` 更新并在 `self_audit_docx` 新增 `"梯度下降"`、`"批量梯度"`、`"单特征"`、`"单变量"` 禁词拦截；生成报告通过审计（OMML `52 / 7`，0 未渲染 LaTeX，0 页眉，0 非白底纹，0 禁词命中），`Practice2_HousePrice_Regression_Report_裴翰章.pdf` 逐页视觉检查通过（严格 4 页，标题单行居中，3 张表整表不跨页，第 4 页代码附录排版整洁）。脚本文件版本降级后缀已全面规范为仅作用于文件名的 `_V1`/`_V2`/`_V3`...（禁用“定稿/终版”命名）。
