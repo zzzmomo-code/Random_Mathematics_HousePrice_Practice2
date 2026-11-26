@@ -17,7 +17,8 @@
   - Pandoc 3.9.0.2：`C:\Users\48747\miniconda3\Library\bin\pandoc.exe`
   - PDF 导出：Microsoft Word COM（Windows 原生）
 - **当前范围与边界**：
-  - 本阶段完成全套 MATLAB R2025b 建模与可视化、**中文版正式实验报告（DOCX + PDF）**、给 MoMo 看的通俗教学指南及协作/仓库文档。
+  - **2026-11-26 精简审校定稿**：正式中文 `Practice Report`（DOCX / PDF）已按用户最新要求重构为 **4 页纯课堂口吻论文格式**：仅保留单特征直线/抛物线拟合、多元线性回归（正规方程/`fitlm`）及**唯一最简课内拓展（手动批量梯度下降）**，并采用**标准化回归系数**与**逐个去特征误差增幅**两种原理直白的贡献度评价方法；彻底去除参考文献与 `VIF`/条件数/偏度/峰度/Jarque-Bera/MAPE/斯皮尔曼/皮尔逊/KDE/多项式交互/Ridge/Lasso/决策树/随机森林/GBDT 等过度专业或课外内容。
+  - 原有 `main_house_price_modeling.m` 与 `results_summary.json` 仍完整保留在 `02_MATLAB_Modeling\` 中作为全量对照备份；报告专用 4 张质朴白底图由 `02_MATLAB_Modeling\generate_concise_report_figures.m` 生成。
   - **英文版报告**：按用户确认方案，待中文版审核通过后视需要再生成。
   - 数据源为聚合数据 300 条学习样本，结果仅代表该样本集规律，不含区位/学区/宏观变量。
 
@@ -39,18 +40,18 @@
 - `E:\Random_Mathematics_Project_HousePrice\02_MATLAB_Modeling\generate_figures.m`
 - `E:\Random_Mathematics_Project_HousePrice\02_MATLAB_Modeling\results_summary.json`
 
-### 5 张白底 300-DPI 高清图表
-- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig1_eda_correlation_heatmap.png`
-- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig2_single_feature_line_vs_parabola.png`
-- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig3_models_progression_and_diagnostics.png`
-- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig4_gd_convergence_and_lasso_path.png`
-- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig5_feature_importance_4methods.png`
+### 4 张精简版正式报告专用 MATLAB 300-DPI 白底图（`generate_concise_report_figures.m` 生成）
+- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig1_concise_eda.png`
+- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig2_concise_line_vs_parabola.png`
+- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig3_ols_fit_and_gd.png`
+- `E:\Random_Mathematics_Project_HousePrice\03_Figures\fig4_feature_importance_top3.png`
+*(全量拓展对比图 `fig1~fig5_*.png` 亦保留于 `03_Figures\` 目录备查)*
 
 ### 报告、教学手册与协作文档
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\build_practice2_report.py`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\practice2_report_source.md`
 - `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.docx`
-- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章.pdf`
+- `E:\Random_Mathematics_Project_HousePrice\04_Report\Practice2_HousePrice_Regression_Report_裴翰章_精简版.pdf`（因旧版 PDF 曾被查看器占用，最新版安全导出至 `_精简版.pdf`，共 4 页完整无拆表）
 - `E:\Random_Mathematics_Project_HousePrice\00_【给MoMo看】房价回归实验通俗教学指南.md`
 - `E:\Random_Mathematics_Project_HousePrice\README.md`
 - `E:\Random_Mathematics_Project_HousePrice\AI_CHAT.md`

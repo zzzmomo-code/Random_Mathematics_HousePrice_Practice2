@@ -7,7 +7,7 @@
     "random_seed": 42,
     "train_test_split": "80/20 holdout (240 train / 60 test)",
     "cv_scheme": "5-fold CV strictly inside training set (leak-free scaling inside folds)",
-    "generated_at": "2026-11-17 18:54:12"
+    "generated_at": "2026-11-26 23:30:10"
   },
   "dataset_summary": {
     "n_total": 300,

@@ -38,3 +38,13 @@
   - 报告严格单人署名（裴翰章 `2025310104015`，指导教师：梁菁 教授），无其他同学姓名、无 AI 过程痕迹、无浮夸绝对词。
   - 首轮渲染发现并修正了第 1 页正文段误触表注居中规则、主标题折行、公式负号间距与第 7 页稀疏尾页问题，重编译压缩至平衡 6 页。
 - **终审与归档**：Stage 1（MATLAB 数值与 5 图视觉复核）及 Stage 2（DOCX 137 个 OMML 公式/零页眉/纯白三线表/全表数值核对 + PDF 6 页逐页视觉检查）均通过 `@verifier` 独立验证（零缺陷），仓库已同步推送至 GitHub `https://github.com/zzzmomo-code/Random_Mathematics_HousePrice_Practice2`。待用户审阅中文版报告后视需要扩展英文版。
+
+---
+
+## [2026-11-26] 阶段三：审查优化 —— 极简课堂口吻 4 页论文格式定稿
+
+- **优化依据**：按 MoMo 审阅意见，消除过度专业词与课外算法堆砌，采用“正式标题 + 学生口吻正文 + 全课堂术语 + 极简结论 + 无参考文献”写法。
+- **核心改动**：
+  1. **MATLAB 精简白底插图**：新建 `02_MATLAB_Modeling\generate_concise_report_figures.m` 实跑导出 4 张质朴白底图（`fig1_concise_eda.png`、`fig2_concise_line_vs_parabola.png`、`fig3_ols_fit_and_gd.png`、`fig4_feature_importance_top3.png`），放大插入宽度至 5.85 英寸方便教师阅览。
+  2. **仅留唯一最简课内拓展**：报告聚焦单特征直线/抛物线 → 多元线性回归（正规方程 / `fitlm`）+ 唯一课内微积分拓展（手动批量梯度下降）；特征贡献度详尽通俗讲解标准化回归系数与逐个去特征误差增幅两种方法，彻底剔除 `VIF`/条件数/偏度/峰度/Jarque-Bera/MAPE/斯皮尔曼/皮尔逊/KDE/多项式交互/Ridge/Lasso/树集成与参考文献。
+  3. **排版自检与 PDF 逐页验收**：`04_Report\Practice2_HousePrice_Regression_Report_裴翰章.docx`（59 个 OMML 公式 / 9 个一式一行块公式，0 未渲染 LaTeX，0 页眉，0 非白底纹，0 禁词命中）与 `04_Report\Practice2_HousePrice_Regression_Report_裴翰章_精简版.pdf`（**严格 4 页**，表 1–3 全整表不跨页，年份无千分位逗号，`BedroomAbvGr` 不折行）已通过逐页视觉核查。

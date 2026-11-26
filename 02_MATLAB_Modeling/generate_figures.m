@@ -209,7 +209,7 @@ ylabel(ax2, '拟合残差 Residual (千美元, $k)', 'FontName', font_name, 'Fon
 title(ax2, '(b) 单特征残差分布：无明显曲率，但遗漏特征致残差高达 ±$100k', ...
     'FontName', font_name, 'FontSize', 10.0, 'FontWeight', 'bold', 'Color', c_axis);
 xlim(ax2, [400, 4150]);
-ylim(ax2, [-140, 155]);
+ylim(ax2, [-140, 195]);
 
 legend(ax2, 'Location', 'northwest', 'FontName', font_name, 'FontSize', 8.2, ...
     'Color', 'w', 'TextColor', c_axis, 'EdgeColor', [0.75 0.75 0.75]);
@@ -278,7 +278,7 @@ for i = 1:n_m
 end
 
 % Tier labels at top
-y_top_lim = max_bar_h * 1.28;
+y_top_lim = max_bar_h * 1.32;
 ylim(ax1, [0, y_top_lim]);
 xlim(ax1, [0.4, n_m + 0.6]);
 tier_x = [1.5, 4.0, 6.5, 9.0];
@@ -372,7 +372,7 @@ title(ax3, '(c) 最优模型残差诊断图（同方差性与正态性检验）'
 legend(ax3, 'Location', 'northwest', 'FontName', font_name, 'FontSize', 8.2, ...
     'Color', 'w', 'TextColor', c_axis, 'EdgeColor', [0.75 0.75 0.75]);
 
-jb_txt = sprintf('残差均值 = $%.2fk, SD = $%.2fk\nJarque-Bera 正态检验: p = %.4f', ...
+jb_txt = sprintf('测试集残差均值 = $%.2fk, SD = $%.2fk\nJarque-Bera 正态检验: p = %.4f', ...
     pd.diag_info.test_resid_mean/1e3, pd.diag_info.test_resid_std/1e3, pd.diag_info.jarque_bera_p);
 text(ax3, 0.96, 0.05, jb_txt, 'Units', 'normalized', ...
     'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom', ...
@@ -405,7 +405,7 @@ yline(ax1, ne_mse_scaled, '--', 'Color', c_crimson, 'LineWidth', 1.8, ...
 grid(ax1, 'on'); ax1.GridAlpha = 0.25;
 set(ax1, 'FontName', font_name, 'FontSize', 9.2, 'Color', 'w', ...
     'XColor', c_axis, 'YColor', c_axis, 'LineWidth', 1.0, 'Box', 'on');
-xlabel(ax1, '迭代次数 Iteration', 'FontName', font_name, 'FontSize', 10);
+xlabel(ax1, '迭代次数 Iteration（展示前 250 步收敛过程）', 'FontName', font_name, 'FontSize', 10);
 ylabel(ax1, '训练集均方误差 MSE (10^8 美元^2，对数坐标)', 'FontName', font_name, 'FontSize', 9.8);
 title(ax1, '(a) 标准化特征批量梯度下降 (Batch GD) 收敛曲线', ...
     'FontName', font_name, 'FontSize', 10.3, 'FontWeight', 'bold', 'Color', c_axis);
