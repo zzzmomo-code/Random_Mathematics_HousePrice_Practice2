@@ -83,3 +83,12 @@
   1. **部分二次项建模（10 项）**：逐项排查 8 特征后选定跨度最大的两个连续面积特征 `GrLivArea` 与 `TotalBsmtSF` 加二次平方项，其余 6 个特征保持线性；同步更新 `main_house_price_modeling.m` (`T2_PartialQuadratic`)、`practice2_house_price_clean.m` 与 `practice2_house_price_tutorial.m`。MATLAB R2025b 实跑：`Train RMSE=$11,168`，`5折 CV RMSE=$11,756`，`Test RMSE=$10,926`（较全线性 `\$11,030` 再降）、`Test MAE=$9,505`、`Test R^2=0.9774`。
   2. **报告正文与附录修复**：第 2 节开头明确解释借鉴 AI 训练防“背答案”（过拟合）的 8:2 划分与 5 折 CV 原理；第 2.2 节与表 2 改为“多元一次线性（8 项）vs 部分二次拟合（10 项）”；移除附录冗余 `Z_te`；统一第 4 节 `$11,030` / `$10,926` 与 `5 折` 用词。
   3. **验收通过**：XML 自检通过（`OMML 48 / 7`，0 残留 LaTeX，0 页眉，0 非白底纹，0 禁词命中）；进一步修正第 2 节与教学脚本为“AI 训练与验证过程中常用的 5 折交叉验证（CV）”并导出 `04_Report\Practice2_HousePrice_Regression_Report_裴翰章_V4.pdf`（同步刷新 `.docx` 与 `_V1.pdf`），逐页视觉检查确认严格 4 页、全整表不跨页。
+
+---
+
+## [2026-11-27] 阶段七：EN_V1 —— 全英文版报告与 3 张全英文 MATLAB 图表交付
+
+- **交付物**：
+  1. `02_MATLAB_Modeling\generate_english_report_figures.m`：在 MATLAB R2025b 零警告导出 3 张全英文 300-DPI 纯白底图（`03_Figures\fig1_en_eda.png`、`fig2_en_ols_fit_and_residuals.png`、`fig3_en_feature_importance_top3.png`）。
+  2. `04_Report\build_practice2_report_en.py`：输出 `practice2_report_source_en.md`、`Practice2_HousePrice_Regression_Report_Hanzhang_Pei_EN_V1.docx` 与 `Practice2_HousePrice_Regression_Report_Hanzhang_Pei_EN_V1.pdf`，严格复刻中文 V4 全部内容、公式与课堂术语（`predictors`、`response`、`least square method`、`SSE`、`normal equations`、`fitlm`、`RMSE`、`MAE`、部分二次拟合及 Top 3 贡献评估）。
+- **验证结果**：英文 3 张 PNG 与 4 页 `_EN_V1.pdf` 完成逐图/逐页视觉核查；DOCX XML 审计通过（`OMML 52 / 7`，0 未编译 LaTeX，0 页眉，0 非白底纹，0 禁词命中）。
